@@ -1,13 +1,33 @@
-
+```javascript
 // ============================================================
 // CONSUMER BEHAVIOR INTELLIGENCE
-// DASHBOARD DATA ENGINE
+// 3-PAGE ANALYTICS DATA ENGINE
 // ============================================================
 
-Chart.defaults.color = "#81939f";
-Chart.defaults.borderColor = "#1b2d39";
 
-let charts = {};
+// ============================================================
+// CHART THEME
+// ============================================================
+
+Chart.defaults.color = "#8b5364";
+Chart.defaults.borderColor = "#f1dce3";
+
+const charts = {};
+
+
+// ============================================================
+// COLOR PALETTE
+// ============================================================
+
+const COLORS = {
+    red: "#b51f3a",
+    redDark: "#8f1630",
+    pink: "#e889a0",
+    pinkLight: "#f7dce4",
+    rose: "#c94f6d",
+    soft: "#f3c4d0",
+    muted: "#a56b7a"
+};
 
 
 // ============================================================
@@ -15,6 +35,7 @@ let charts = {};
 // ============================================================
 
 function money(value) {
+
     return "£" + Number(value).toLocaleString(
         "en-GB",
         {
@@ -26,9 +47,8 @@ function money(value) {
 
 
 function number(value) {
-    return Number(value).toLocaleString(
-        "en-GB"
-    );
+
+    return Number(value).toLocaleString("en-GB");
 }
 
 
@@ -41,12 +61,90 @@ async function getData(endpoint) {
     const response = await fetch(endpoint);
 
     if (!response.ok) {
+
         throw new Error(
-            `API error: ${endpoint}`
+            `API error: ${endpoint} (${response.status})`
         );
+
     }
 
     return await response.json();
+}
+
+
+// ============================================================
+// SAFE ELEMENT CHECK
+// ============================================================
+
+function exists(id) {
+
+    return document.getElementById(id) !== null;
+}
+
+
+// ============================================================
+// CHART DEFAULTS
+// ============================================================
+
+const baseOptions = {
+
+    responsive: true,
+
+    maintainAspectRatio: false,
+
+    animation: {
+        duration: 900,
+        easing: "easeOutQuart"
+    },
+
+    plugins: {
+
+        legend: {
+            display: false
+        },
+
+        tooltip: {
+
+            backgroundColor: "#ffffff",
+
+            titleColor: COLORS.redDark,
+
+            bodyColor: "#633747",
+
+            borderColor: COLORS.pinkLight,
+
+            borderWidth: 1,
+
+            padding: 12,
+
+            displayColors: false
+
+        }
+
+    }
+
+};
+
+
+// ============================================================
+// ROLE DISPLAY
+// ============================================================
+
+function loadUserRole() {
+
+    const role =
+        localStorage.getItem("cbiUserRole");
+
+    document
+        .querySelectorAll("#userRole")
+        .forEach(element => {
+
+            if (role) {
+                element.textContent = role;
+            }
+
+        });
+
 }
 
 
@@ -56,16 +154,29 @@ async function getData(endpoint) {
 
 async function loadKPIs() {
 
-    const data = await getData(
-        "/api/kpis"
-    );
+    if (
+        !exists("revenue") &&
+        !exists("orders") &&
+        !exists("customers") &&
+        !exists("uk-share")
+    ) {
+        return;
+    }
+
+
+    const data = await getData("/api/kpis");
+
 
     data.forEach(item => {
 
         const metric = item.Metric;
         const value = item.Value;
 
-        if (metric === "Total Revenue") {
+
+        if (
+            metric === "Total Revenue" &&
+            exists("revenue")
+        ) {
 
             document.getElementById(
                 "revenue"
@@ -73,7 +184,11 @@ async function loadKPIs() {
 
         }
 
-        else if (metric === "Total Orders") {
+
+        else if (
+            metric === "Total Orders" &&
+            exists("orders")
+        ) {
 
             document.getElementById(
                 "orders"
@@ -81,7 +196,11 @@ async function loadKPIs() {
 
         }
 
-        else if (metric === "Total Customers") {
+
+        else if (
+            metric === "Total Customers" &&
+            exists("customers")
+        ) {
 
             document.getElementById(
                 "customers"
@@ -89,220 +208,138 @@ async function loadKPIs() {
 
         }
 
-        else if (metric === "UK Revenue Share") {
 
-            document.getElementById(
-                "uk-share"
-            ).textContent =
+        else if (
+            metric === "UK Revenue Share"
+        ) {
+
+            const formatted =
                 Number(value).toFixed(2) + "%";
+
+
+            if (exists("uk-share")) {
+
+                document.getElementById(
+                    "uk-share"
+                ).textContent = formatted;
+
+            }
+
+
+            if (exists("uk-share-insight")) {
+
+                document.getElementById(
+                    "uk-share-insight"
+                ).textContent = formatted;
+
+            }
 
         }
 
     });
+
 }
 
 
 // ============================================================
 // MONTHLY REVENUE
+// PAGE 2
 // ============================================================
 
 async function loadMonthly() {
 
-    const data = await getData(
-        "/api/monthly"
-    );
+    if (!exists("monthlyChart")) {
+        return;
+    }
 
-    const labels = data.map(
-        x => x.YearMonth
-    );
 
-    const values = data.map(
-        x => Number(x.Revenue)
-    );
+    const data =
+        await getData("/api/monthly");
+
+
+    const labels =
+        data.map(x => x.YearMonth);
+
+
+    const values =
+        data.map(x => Number(x.Revenue));
+
 
     const ctx =
-        document.getElementById(
-            "monthlyChart"
-        );
+        document.getElementById("monthlyChart");
 
-    charts.monthly = new Chart(
-        ctx,
-        {
+
+    charts.monthly =
+        new Chart(ctx, {
+
             type: "line",
 
             data: {
-                labels: labels,
+
+                labels,
 
                 datasets: [{
+
                     label: "Revenue",
 
                     data: values,
 
-                    borderWidth: 2,
+                    borderColor: COLORS.red,
+
+                    backgroundColor:
+                        "rgba(181,31,58,0.10)",
+
+                    borderWidth: 3,
 
                     pointRadius: 3,
 
-                    tension: 0.35,
-
-                    fill: true,
-
-                    backgroundColor:
-                        "rgba(99, 211, 145, 0.08)",
-
-                    borderColor:
-                        "#63d391",
+                    pointHoverRadius: 6,
 
                     pointBackgroundColor:
-                        "#63d391"
+                        COLORS.red,
+
+                    tension: 0.4,
+
+                    fill: true
+
                 }]
+
             },
+
 
             options: {
 
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                plugins: {
-
-                    legend: {
-                        display: false
-                    },
-
-                    tooltip: {
-
-                        callbacks: {
-
-                            label: function(context) {
-
-                                return money(
-                                    context.raw
-                                );
-
-                            }
-
-                        }
-
-                    }
-
-                },
+                ...baseOptions,
 
                 scales: {
 
                     x: {
+
                         grid: {
                             display: false
+                        },
+
+                        ticks: {
+                            color: COLORS.muted
                         }
+
                     },
 
                     y: {
 
                         grid: {
-                            color: "#182a35"
+                            color: "#f3e1e6"
                         },
 
                         ticks: {
 
-                            callback:
-                                function(value) {
+                            color: COLORS.muted,
 
-                                    return "£" +
-                                        Number(value)
-                                        .toLocaleString(
-                                            "en-GB"
-                                        );
-
-                                }
-
-                        }
-
-                    }
-
-                }
-
-            }
-        }
-    );
-}
-
-
-// ============================================================
-// COUNTRY REVENUE
-// ============================================================
-
-async function loadCountries() {
-
-    const data = await getData(
-        "/api/countries"
-    );
-
-    const top = data
-        .sort(
-            (a, b) =>
-                Number(b.Revenue) -
-                Number(a.Revenue)
-        )
-        .slice(0, 10);
-
-    const labels = top.map(
-        x => x.Country
-    );
-
-    const values = top.map(
-        x => Number(x.Revenue)
-    );
-
-    const ctx =
-        document.getElementById(
-            "countryChart"
-        );
-
-    charts.country = new Chart(
-        ctx,
-        {
-            type: "bar",
-
-            data: {
-
-                labels: labels,
-
-                datasets: [{
-
-                    label: "Revenue",
-
-                    data: values,
-
-                    borderRadius: 5,
-
-                    backgroundColor:
-                        "#4f7d91"
-
-                }]
-
-            },
-
-            options: {
-
-                indexAxis: "y",
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                plugins: {
-
-                    legend: {
-                        display: false
-                    },
-
-                    tooltip: {
-
-                        callbacks: {
-
-                            label:
-                                context =>
-                                    money(
-                                        context.raw
+                            callback: value =>
+                                "£" +
+                                Number(value)
+                                    .toLocaleString(
+                                        "en-GB"
                                     )
 
                         }
@@ -311,20 +348,122 @@ async function loadCountries() {
 
                 },
 
+
+                plugins: {
+
+                    ...baseOptions.plugins,
+
+                    tooltip: {
+
+                        ...baseOptions.plugins.tooltip,
+
+                        callbacks: {
+
+                            label: context =>
+                                money(context.raw)
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+}
+
+
+// ============================================================
+// COUNTRY REVENUE
+// PAGE 2
+// ============================================================
+
+async function loadCountries() {
+
+    if (!exists("countryChart")) {
+        return;
+    }
+
+
+    const data =
+        await getData("/api/countries");
+
+
+    const top =
+        data
+            .sort(
+                (a, b) =>
+                    Number(b.Revenue) -
+                    Number(a.Revenue)
+            )
+            .slice(0, 10);
+
+
+    const labels =
+        top.map(x => x.Country);
+
+
+    const values =
+        top.map(x => Number(x.Revenue));
+
+
+    const ctx =
+        document.getElementById("countryChart");
+
+
+    charts.country =
+        new Chart(ctx, {
+
+            type: "bar",
+
+            data: {
+
+                labels,
+
+                datasets: [{
+
+                    label: "Revenue",
+
+                    data: values,
+
+                    backgroundColor:
+                        COLORS.red,
+
+                    hoverBackgroundColor:
+                        COLORS.redDark,
+
+                    borderRadius: 8,
+
+                    borderSkipped: false
+
+                }]
+
+            },
+
+
+            options: {
+
+                ...baseOptions,
+
+                indexAxis: "y",
+
                 scales: {
 
                     x: {
 
                         grid: {
-                            color: "#182a35"
+                            color: "#f3e1e6"
                         },
 
                         ticks: {
 
-                            callback:
-                                value =>
-                                    "£" +
-                                    Number(value)
+                            color: COLORS.muted,
+
+                            callback: value =>
+                                "£" +
+                                Number(value)
                                     .toLocaleString(
                                         "en-GB"
                                     )
@@ -337,6 +476,30 @@ async function loadCountries() {
 
                         grid: {
                             display: false
+                        },
+
+                        ticks: {
+                            color: "#633747"
+                        }
+
+                    }
+
+                },
+
+
+                plugins: {
+
+                    ...baseOptions.plugins,
+
+                    tooltip: {
+
+                        ...baseOptions.plugins.tooltip,
+
+                        callbacks: {
+
+                            label: context =>
+                                money(context.raw)
+
                         }
 
                     }
@@ -345,82 +508,348 @@ async function loadCountries() {
 
             }
 
-        }
-    );
+        });
+
 }
 
 
 // ============================================================
 // CUSTOMER SEGMENTS
+// PAGE 3
 // ============================================================
 
 async function loadSegments() {
 
-    const data = await getData(
-        "/api/segments"
-    );
+    if (
+        !exists("segmentChart") &&
+        !exists("segments")
+    ) {
+        return;
+    }
 
-    const labels = data.map(
-        x => x.Segment
-    );
 
-    const customers = data.map(
-        x => Number(x.Customers)
-    );
+    const data =
+        await getData("/api/segments");
+
+
+    // --------------------------------------------------------
+    // CHART
+    // --------------------------------------------------------
+
+    if (exists("segmentChart")) {
+
+        const labels =
+            data.map(x => x.Segment);
+
+
+        const customers =
+            data.map(
+                x => Number(x.Customers)
+            );
+
+
+        const ctx =
+            document.getElementById(
+                "segmentChart"
+            );
+
+
+        charts.segment =
+            new Chart(ctx, {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels,
+
+                    datasets: [{
+
+                        data: customers,
+
+                        backgroundColor: [
+
+                            COLORS.red,
+
+                            COLORS.rose,
+
+                            COLORS.pink,
+
+                            COLORS.soft,
+
+                            COLORS.muted
+
+                        ],
+
+                        borderColor:
+                            "#ffffff",
+
+                        borderWidth: 4,
+
+                        hoverOffset: 8
+
+                    }]
+
+                },
+
+
+                options: {
+
+                    ...baseOptions,
+
+                    cutout: "68%",
+
+                    plugins: {
+
+                        ...baseOptions.plugins,
+
+                        legend: {
+
+                            display: true,
+
+                            position: "bottom",
+
+                            labels: {
+
+                                color:
+                                    "#633747",
+
+                                padding: 18,
+
+                                usePointStyle: true,
+
+                                pointStyle:
+                                    "circle"
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+    }
+
+
+    // --------------------------------------------------------
+    // SEGMENT LIST
+    // --------------------------------------------------------
+
+    if (exists("segments")) {
+
+        const container =
+            document.getElementById(
+                "segments"
+            );
+
+
+        container.innerHTML = "";
+
+
+        data.forEach(
+            (segment, index) => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "segment-item";
+
+
+                div.innerHTML = `
+
+                    <div class="segment-top">
+
+                        <span class="segment-name">
+
+                            <span class="segment-dot"
+                                style="
+                                    background:
+                                    ${[
+                                        COLORS.red,
+                                        COLORS.rose,
+                                        COLORS.pink,
+                                        COLORS.soft,
+                                        COLORS.muted
+                                    ][index % 5]};
+                                ">
+                            </span>
+
+                            ${segment.Segment}
+
+                        </span>
+
+                        <span class="segment-count">
+
+                            ${number(
+                                segment.Customers
+                            )}
+
+                            customers
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="segment-meta">
+
+                        <span>
+                            Recency
+                            ${Number(
+                                segment.Avg_Recency
+                            ).toFixed(1)}
+                        </span>
+
+                        <span>
+                            Frequency
+                            ${Number(
+                                segment.Avg_Frequency
+                            ).toFixed(1)}
+                        </span>
+
+                        <strong>
+                            ${money(
+                                segment.Total_Revenue
+                            )}
+                        </strong>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(div);
+
+            }
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// TOP PRODUCTS
+// PAGE 3
+// ============================================================
+
+async function loadProducts() {
+
+    if (!exists("productChart")) {
+        return;
+    }
+
+
+    const data =
+        await getData("/api/products");
+
+
+    const top =
+        data
+            .sort(
+                (a, b) =>
+                    Number(b.Revenue) -
+                    Number(a.Revenue)
+            )
+            .slice(0, 10);
+
+
+    const labels =
+        top.map(
+            x =>
+                String(
+                    x.Description
+                ).substring(0, 30)
+        );
+
+
+    const values =
+        top.map(
+            x => Number(x.Revenue)
+        );
+
 
     const ctx =
         document.getElementById(
-            "segmentChart"
+            "productChart"
         );
 
-    charts.segment = new Chart(
-        ctx,
-        {
-            type: "doughnut",
+
+    charts.products =
+        new Chart(ctx, {
+
+            type: "bar",
 
             data: {
 
-                labels: labels,
+                labels,
 
                 datasets: [{
 
-                    data: customers,
+                    label: "Revenue",
 
-                    backgroundColor: [
-                        "#63d391",
-                        "#4f7d91",
-                        "#7f91a0",
-                        "#405968"
-                    ],
+                    data: values,
 
-                    borderColor:
-                        "#0d1a24",
+                    backgroundColor:
+                        COLORS.rose,
 
-                    borderWidth: 3
+                    hoverBackgroundColor:
+                        COLORS.red,
+
+                    borderRadius: 7,
+
+                    borderSkipped: false
 
                 }]
 
             },
 
+
             options: {
 
-                responsive: true,
+                ...baseOptions,
 
-                maintainAspectRatio: false,
+                indexAxis: "y",
 
-                cutout: "65%",
+                scales: {
 
-                plugins: {
+                    x: {
 
-                    legend: {
+                        grid: {
+                            color: "#f3e1e6"
+                        },
 
-                        position: "bottom",
+                        ticks: {
 
-                        labels: {
+                            color: COLORS.muted,
 
-                            padding: 15,
+                            callback: value =>
+                                "£" +
+                                Number(value)
+                                    .toLocaleString(
+                                        "en-GB"
+                                    )
 
-                            usePointStyle: true,
+                        }
+
+                    },
+
+                    y: {
+
+                        grid: {
+                            display: false
+                        },
+
+                        ticks: {
+
+                            color: "#633747",
 
                             font: {
                                 size: 10
@@ -430,199 +859,22 @@ async function loadSegments() {
 
                     }
 
-                }
+                },
 
-            }
-
-        }
-    );
-
-
-    // Segment list
-
-    const container =
-        document.getElementById(
-            "segments"
-        );
-
-    container.innerHTML = "";
-
-    data.forEach(segment => {
-
-        const div =
-            document.createElement(
-                "div"
-            );
-
-        div.className =
-            "segment-item";
-
-        div.innerHTML = `
-
-            <div class="segment-top">
-
-                <span class="segment-name">
-                    ${segment.Segment}
-                </span>
-
-                <span class="segment-count">
-                    ${number(segment.Customers)}
-                    customers
-                </span>
-
-            </div>
-
-            <div class="segment-meta">
-
-                <span>
-                    Avg Recency:
-                    ${Number(
-                        segment.Avg_Recency
-                    ).toFixed(1)}
-                </span>
-
-                <span>
-                    Avg Frequency:
-                    ${Number(
-                        segment.Avg_Frequency
-                    ).toFixed(1)}
-                </span>
-
-                <span>
-                    ${money(
-                        segment.Total_Revenue
-                    )}
-                </span>
-
-            </div>
-
-        `;
-
-        container.appendChild(div);
-
-    });
-}
-
-
-// ============================================================
-// TOP PRODUCTS
-// ============================================================
-
-async function loadProducts() {
-
-    const data = await getData(
-        "/api/products"
-    );
-
-    const top = data
-        .sort(
-            (a, b) =>
-                Number(b.Revenue) -
-                Number(a.Revenue)
-        )
-        .slice(0, 10);
-
-    const labels = top.map(
-        x =>
-            String(x.Description)
-                .substring(0, 30)
-    );
-
-    const values = top.map(
-        x => Number(x.Revenue)
-    );
-
-    const ctx =
-        document.getElementById(
-            "productChart"
-        );
-
-    charts.products = new Chart(
-        ctx,
-        {
-            type: "bar",
-
-            data: {
-
-                labels: labels,
-
-                datasets: [{
-
-                    label: "Revenue",
-
-                    data: values,
-
-                    borderRadius: 5,
-
-                    backgroundColor:
-                        "#627f8d"
-
-                }]
-
-            },
-
-            options: {
-
-                indexAxis: "y",
-
-                responsive: true,
-
-                maintainAspectRatio: false,
 
                 plugins: {
 
-                    legend: {
-                        display: false
-                    },
+                    ...baseOptions.plugins,
 
                     tooltip: {
 
+                        ...baseOptions.plugins.tooltip,
+
                         callbacks: {
 
-                            label:
-                                context =>
-                                    money(
-                                        context.raw
-                                    )
+                            label: context =>
+                                money(context.raw)
 
-                        }
-
-                    }
-
-                },
-
-                scales: {
-
-                    x: {
-
-                        grid: {
-                            color: "#182a35"
-                        },
-
-                        ticks: {
-
-                            callback:
-                                value =>
-                                    "£" +
-                                    Number(value)
-                                    .toLocaleString(
-                                        "en-GB"
-                                    )
-
-                        }
-
-                    },
-
-                    y: {
-
-                        grid: {
-                            display: false
-                        },
-
-                        ticks: {
-                            font: {
-                                size: 9
-                            }
                         }
 
                     }
@@ -631,52 +883,61 @@ async function loadProducts() {
 
             }
 
-        }
-    );
+        });
+
 }
 
 
 // ============================================================
 // PRODUCT PAIRS
+// PAGE 3
 // ============================================================
 
 async function loadPairs() {
 
-    const data = await getData(
-        "/api/pairs"
-    );
+    if (!exists("pairs")) {
+        return;
+    }
+
+
+    const data =
+        await getData("/api/pairs");
+
 
     const container =
-        document.getElementById(
-            "pairs"
-        );
+        document.getElementById("pairs");
+
 
     container.innerHTML = "";
 
-    data.slice(0, 15).forEach(
-        pair => {
+
+    data
+        .slice(0, 12)
+        .forEach(pair => {
 
             const div =
                 document.createElement(
                     "div"
                 );
 
+
             div.className =
                 "pair-item";
+
 
             div.innerHTML = `
 
                 <div class="pair-products">
 
-                    ${pair.Product_A}
+                    <span>
+                        ${pair.Product_A}
+                    </span>
 
-                    <br>
+                    <b>+</b>
 
-                    +
-
-                    <br>
-
-                    ${pair.Product_B}
+                    <span>
+                        ${pair.Product_B}
+                    </span>
 
                 </div>
 
@@ -686,50 +947,62 @@ async function loadPairs() {
                         pair.CoPurchase_Count
                     )}
 
-                    CO-PURCHASES
+                    <small>
+                        CO-PURCHASES
+                    </small>
 
                 </div>
 
             `;
 
+
             container.appendChild(div);
 
-        }
-    );
+        });
+
 }
 
 
 // ============================================================
 // DAY OF WEEK
+// PAGE 3
 // ============================================================
 
 async function loadDays() {
 
-    const data = await getData(
-        "/api/days"
-    );
+    if (!exists("dayChart")) {
+        return;
+    }
 
-    const labels = data.map(
-        x => x.DayOfWeek
-    );
 
-    const values = data.map(
-        x => Number(x.Revenue) || 0
-    );
+    const data =
+        await getData("/api/days");
+
+
+    const labels =
+        data.map(x => x.DayOfWeek);
+
+
+    const values =
+        data.map(
+            x => Number(x.Revenue) || 0
+        );
+
 
     const ctx =
         document.getElementById(
             "dayChart"
         );
 
-    charts.days = new Chart(
-        ctx,
-        {
+
+    charts.days =
+        new Chart(ctx, {
+
             type: "bar",
 
             data: {
 
-                labels: labels,
+                labels,
 
                 datasets: [{
 
@@ -737,35 +1010,57 @@ async function loadDays() {
 
                     data: values,
 
-                    borderRadius: 5,
-
                     backgroundColor:
-                        "#4f7d91"
+                        COLORS.pink,
+
+                    hoverBackgroundColor:
+                        COLORS.red,
+
+                    borderRadius: 8,
+
+                    borderSkipped: false
 
                 }]
 
             },
 
+
             options: {
 
-                responsive: true,
+                ...baseOptions,
 
-                maintainAspectRatio: false,
+                scales: {
 
-                plugins: {
+                    x: {
 
-                    legend: {
-                        display: false
+                        grid: {
+                            display: false
+                        },
+
+                        ticks: {
+                            color:
+                                COLORS.muted
+                        }
+
                     },
 
-                    tooltip: {
+                    y: {
 
-                        callbacks: {
+                        grid: {
+                            color:
+                                "#f3e1e6"
+                        },
 
-                            label:
-                                context =>
-                                    money(
-                                        context.raw
+                        ticks: {
+
+                            color:
+                                COLORS.muted,
+
+                            callback: value =>
+                                "£" +
+                                Number(value)
+                                    .toLocaleString(
+                                        "en-GB"
                                     )
 
                         }
@@ -774,29 +1069,19 @@ async function loadDays() {
 
                 },
 
-                scales: {
 
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
+                plugins: {
 
-                    y: {
+                    ...baseOptions.plugins,
 
-                        grid: {
-                            color: "#182a35"
-                        },
+                    tooltip: {
 
-                        ticks: {
+                        ...baseOptions.plugins.tooltip,
 
-                            callback:
-                                value =>
-                                    "£" +
-                                    Number(value)
-                                    .toLocaleString(
-                                        "en-GB"
-                                    )
+                        callbacks: {
+
+                            label: context =>
+                                money(context.raw)
 
                         }
 
@@ -806,42 +1091,53 @@ async function loadDays() {
 
             }
 
-        }
-    );
+        });
+
 }
 
 
 // ============================================================
-// HOUR
+// HOURLY BEHAVIOR
+// PAGE 3
 // ============================================================
 
 async function loadHours() {
 
-    const data = await getData(
-        "/api/hours"
-    );
+    if (!exists("hourChart")) {
+        return;
+    }
 
-    const labels = data.map(
-        x => `${x.Hour}:00`
-    );
 
-    const values = data.map(
-        x => Number(x.Revenue)
-    );
+    const data =
+        await getData("/api/hours");
+
+
+    const labels =
+        data.map(
+            x => `${x.Hour}:00`
+        );
+
+
+    const values =
+        data.map(
+            x => Number(x.Revenue) || 0
+        );
+
 
     const ctx =
         document.getElementById(
             "hourChart"
         );
 
-    charts.hours = new Chart(
-        ctx,
-        {
+
+    charts.hours =
+        new Chart(ctx, {
+
             type: "line",
 
             data: {
 
-                labels: labels,
+                labels,
 
                 datasets: [{
 
@@ -849,17 +1145,22 @@ async function loadHours() {
 
                     data: values,
 
-                    borderWidth: 2,
+                    borderColor:
+                        COLORS.red,
 
-                    tension: 0.35,
+                    backgroundColor:
+                        "rgba(181,31,58,0.08)",
+
+                    borderWidth: 3,
 
                     pointRadius: 3,
 
-                    borderColor:
-                        "#63d391",
+                    pointHoverRadius: 7,
 
-                    backgroundColor:
-                        "rgba(99,211,145,0.08)",
+                    pointBackgroundColor:
+                        COLORS.red,
+
+                    tension: 0.4,
 
                     fill: true
 
@@ -867,26 +1168,43 @@ async function loadHours() {
 
             },
 
+
             options: {
 
-                responsive: true,
+                ...baseOptions,
 
-                maintainAspectRatio: false,
+                scales: {
 
-                plugins: {
+                    x: {
 
-                    legend: {
-                        display: false
+                        grid: {
+                            display: false
+                        },
+
+                        ticks: {
+                            color:
+                                COLORS.muted
+                        }
+
                     },
 
-                    tooltip: {
+                    y: {
 
-                        callbacks: {
+                        grid: {
+                            color:
+                                "#f3e1e6"
+                        },
 
-                            label:
-                                context =>
-                                    money(
-                                        context.raw
+                        ticks: {
+
+                            color:
+                                COLORS.muted,
+
+                            callback: value =>
+                                "£" +
+                                Number(value)
+                                    .toLocaleString(
+                                        "en-GB"
                                     )
 
                         }
@@ -895,31 +1213,19 @@ async function loadHours() {
 
                 },
 
-                scales: {
 
-                    x: {
+                plugins: {
 
-                        grid: {
-                            display: false
-                        }
+                    ...baseOptions.plugins,
 
-                    },
+                    tooltip: {
 
-                    y: {
+                        ...baseOptions.plugins.tooltip,
 
-                        grid: {
-                            color: "#182a35"
-                        },
+                        callbacks: {
 
-                        ticks: {
-
-                            callback:
-                                value =>
-                                    "£" +
-                                    Number(value)
-                                    .toLocaleString(
-                                        "en-GB"
-                                    )
+                            label: context =>
+                                money(context.raw)
 
                         }
 
@@ -929,58 +1235,152 @@ async function loadHours() {
 
             }
 
-        }
-    );
+        });
+
 }
 
 
 // ============================================================
-// INITIALIZE DASHBOARD
+// PAGE DETECTION
+// ============================================================
+
+function detectPage() {
+
+    if (exists("monthlyChart")) {
+        return "overview";
+    }
+
+    if (
+        exists("segmentChart") ||
+        exists("productChart") ||
+        exists("dayChart") ||
+        exists("hourChart")
+    ) {
+        return "intelligence";
+    }
+
+    return "landing";
+}
+
+
+// ============================================================
+// INITIALIZE
 // ============================================================
 
 async function initializeDashboard() {
 
+    loadUserRole();
+
+
+    const page =
+        detectPage();
+
+
     try {
 
-        await Promise.all([
+        // ----------------------------------------------------
+        // PAGE 2
+        // ----------------------------------------------------
 
-            loadKPIs(),
+        if (page === "overview") {
 
-            loadMonthly(),
+            await Promise.all([
 
-            loadCountries(),
+                loadKPIs(),
 
-            loadSegments(),
+                loadMonthly(),
 
-            loadProducts(),
+                loadCountries()
 
-            loadPairs(),
+            ]);
 
-            loadDays(),
+        }
 
-            loadHours()
 
-        ]);
+        // ----------------------------------------------------
+        // PAGE 3
+        // ----------------------------------------------------
+
+        else if (page === "intelligence") {
+
+            await Promise.all([
+
+                loadSegments(),
+
+                loadProducts(),
+
+                loadPairs(),
+
+                loadDays(),
+
+                loadHours()
+
+            ]);
+
+        }
+
 
         console.log(
-            "Consumer Behavior Intelligence loaded."
+            `CBI ${page} page loaded successfully.`
         );
 
     }
 
+
     catch (error) {
 
         console.error(
-            "Dashboard loading error:",
+            "Consumer Behavior Intelligence error:",
             error
         );
+
+
+        showDataError();
 
     }
 
 }
 
+
+// ============================================================
+// ERROR STATE
+// ============================================================
+
+function showDataError() {
+
+    const message =
+        document.createElement("div");
+
+
+    message.className =
+        "data-error";
+
+
+    message.innerHTML = `
+
+        <strong>
+            Unable to load analytics data.
+        </strong>
+
+        <span>
+            Please check that the Flask API
+            is running correctly.
+        </span>
+
+    `;
+
+
+    document.body.appendChild(message);
+
+}
+
+
+// ============================================================
+// START
+// ============================================================
 
 document.addEventListener(
     "DOMContentLoaded",
     initializeDashboard
 );
+```
