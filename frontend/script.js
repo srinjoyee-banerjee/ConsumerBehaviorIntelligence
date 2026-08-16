@@ -1,12 +1,11 @@
-```javascript
 // ============================================================
 // CONSUMER BEHAVIOR INTELLIGENCE
-// 3-PAGE ANALYTICS DATA ENGINE
+// 2-PAGE ANALYTICS DASHBOARD
 // ============================================================
 
 
 // ============================================================
-// CHART THEME
+// CHART CONFIGURATION
 // ============================================================
 
 Chart.defaults.color = "#8b5364";
@@ -16,17 +15,29 @@ const charts = {};
 
 
 // ============================================================
-// COLOR PALETTE
+// COLORS
 // ============================================================
 
 const COLORS = {
+
     red: "#b51f3a",
+
     redDark: "#8f1630",
-    pink: "#e889a0",
-    pinkLight: "#f7dce4",
+
     rose: "#c94f6d",
+
+    pink: "#e889a0",
+
+    pinkLight: "#f7dce4",
+
     soft: "#f3c4d0",
-    muted: "#a56b7a"
+
+    muted: "#a56b7a",
+
+    text: "#633747",
+
+    white: "#ffffff"
+
 };
 
 
@@ -36,54 +47,89 @@ const COLORS = {
 
 function money(value) {
 
-    return "£" + Number(value).toLocaleString(
-        "en-GB",
-        {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }
-    );
+    const numberValue =
+        Number(value) || 0;
+
+    return "£" +
+        numberValue.toLocaleString(
+            "en-GB",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }
+        );
 }
 
 
 function number(value) {
 
-    return Number(value).toLocaleString("en-GB");
+    return (
+        Number(value) || 0
+    ).toLocaleString("en-GB");
+}
+
+
+function percentage(value) {
+
+    return (
+        Number(value) || 0
+    ).toFixed(2) + "%";
+
 }
 
 
 // ============================================================
-// API HELPER
-// ============================================================
-
-async function getData(endpoint) {
-
-    const response = await fetch(endpoint);
-
-    if (!response.ok) {
-
-        throw new Error(
-            `API error: ${endpoint} (${response.status})`
-        );
-
-    }
-
-    return await response.json();
-}
-
-
-// ============================================================
-// SAFE ELEMENT CHECK
+// ELEMENT HELPER
 // ============================================================
 
 function exists(id) {
 
     return document.getElementById(id) !== null;
+
 }
 
 
 // ============================================================
-// CHART DEFAULTS
+// API
+// ============================================================
+
+async function getData(endpoint) {
+
+    const response =
+        await fetch(endpoint, {
+            cache: "no-store"
+        });
+
+    if (!response.ok) {
+
+        throw new Error(
+            `${endpoint} returned ${response.status}`
+        );
+
+    }
+
+    const data =
+        await response.json();
+
+    if (
+        data &&
+        !Array.isArray(data) &&
+        data.error
+    ) {
+
+        throw new Error(
+            data.error
+        );
+
+    }
+
+    return data;
+
+}
+
+
+// ============================================================
+// CHART OPTIONS
 // ============================================================
 
 const baseOptions = {
@@ -93,7 +139,7 @@ const baseOptions = {
     maintainAspectRatio: false,
 
     animation: {
-        duration: 900,
+        duration: 800,
         easing: "easeOutQuart"
     },
 
@@ -109,15 +155,13 @@ const baseOptions = {
 
             titleColor: COLORS.redDark,
 
-            bodyColor: "#633747",
+            bodyColor: COLORS.text,
 
             borderColor: COLORS.pinkLight,
 
             borderWidth: 1,
 
-            padding: 12,
-
-            displayColors: false
+            padding: 12
 
         }
 
@@ -127,21 +171,80 @@ const baseOptions = {
 
 
 // ============================================================
-// ROLE DISPLAY
+// PAGE NAVIGATION
+// ============================================================
+
+function setupNavigation() {
+
+    const buttons =
+        document.querySelectorAll(
+            "[data-section]"
+        );
+
+    const sections =
+        document.querySelectorAll(
+            ".dashboard-section"
+        );
+
+    buttons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const target =
+                    button.dataset.section;
+
+                sections.forEach(section => {
+
+                    section.classList.toggle(
+                        "active",
+                        section.id === target
+                    );
+
+                });
+
+                buttons.forEach(item => {
+
+                    item.classList.toggle(
+                        "active",
+                        item === button
+                    );
+
+                });
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            }
+        );
+
+    });
+
+}
+
+
+// ============================================================
+// ROLE
 // ============================================================
 
 function loadUserRole() {
 
     const role =
-        localStorage.getItem("cbiUserRole");
+        localStorage.getItem(
+            "cbiUserRole"
+        );
 
     document
-        .querySelectorAll("#userRole")
+        .querySelectorAll(
+            "#userRole"
+        )
         .forEach(element => {
 
-            if (role) {
-                element.textContent = role;
-            }
+            element.textContent =
+                role || "Analytics User";
 
         });
 
@@ -149,29 +252,25 @@ function loadUserRole() {
 
 
 // ============================================================
-// KPI DATA
+// KPIs
 // ============================================================
 
 async function loadKPIs() {
 
-    if (
-        !exists("revenue") &&
-        !exists("orders") &&
-        !exists("customers") &&
-        !exists("uk-share")
-    ) {
-        return;
-    }
-
-
-    const data = await getData("/api/kpis");
-
+    const data =
+        await getData(
+            "/api/kpis"
+        );
 
     data.forEach(item => {
 
-        const metric = item.Metric;
-        const value = item.Value;
+        const metric =
+            String(
+                item.Metric || ""
+            ).trim();
 
+        const value =
+            item.Value;
 
         if (
             metric === "Total Revenue" &&
@@ -180,57 +279,50 @@ async function loadKPIs() {
 
             document.getElementById(
                 "revenue"
-            ).textContent = money(value);
+            ).textContent =
+                money(value);
 
         }
 
-
-        else if (
+        if (
             metric === "Total Orders" &&
             exists("orders")
         ) {
 
             document.getElementById(
                 "orders"
-            ).textContent = number(value);
+            ).textContent =
+                number(value);
 
         }
 
-
-        else if (
+        if (
             metric === "Total Customers" &&
             exists("customers")
         ) {
 
             document.getElementById(
                 "customers"
-            ).textContent = number(value);
+            ).textContent =
+                number(value);
 
         }
 
-
-        else if (
+        if (
             metric === "UK Revenue Share"
         ) {
 
-            const formatted =
-                Number(value).toFixed(2) + "%";
+            const valueFormatted =
+                percentage(value);
 
-
-            if (exists("uk-share")) {
+            if (
+                exists("uk-share")
+            ) {
 
                 document.getElementById(
                     "uk-share"
-                ).textContent = formatted;
-
-            }
-
-
-            if (exists("uk-share-insight")) {
-
-                document.getElementById(
-                    "uk-share-insight"
-                ).textContent = formatted;
+                ).textContent =
+                    valueFormatted;
 
             }
 
@@ -243,7 +335,6 @@ async function loadKPIs() {
 
 // ============================================================
 // MONTHLY REVENUE
-// PAGE 2
 // ============================================================
 
 async function loadMonthly() {
@@ -252,115 +343,130 @@ async function loadMonthly() {
         return;
     }
 
-
     const data =
-        await getData("/api/monthly");
-
+        await getData(
+            "/api/monthly"
+        );
 
     const labels =
-        data.map(x => x.YearMonth);
-
+        data.map(
+            item => item.YearMonth
+        );
 
     const values =
-        data.map(x => Number(x.Revenue));
-
-
-    const ctx =
-        document.getElementById("monthlyChart");
-
+        data.map(
+            item => Number(
+                item.Revenue
+            ) || 0
+        );
 
     charts.monthly =
-        new Chart(ctx, {
+        new Chart(
+            document.getElementById(
+                "monthlyChart"
+            ),
+            {
 
-            type: "line",
+                type: "line",
 
-            data: {
+                data: {
 
-                labels,
+                    labels,
 
-                datasets: [{
+                    datasets: [{
 
-                    label: "Revenue",
+                        label:
+                            "Revenue",
 
-                    data: values,
+                        data:
+                            values,
 
-                    borderColor: COLORS.red,
+                        borderColor:
+                            COLORS.red,
 
-                    backgroundColor:
-                        "rgba(181,31,58,0.10)",
+                        backgroundColor:
+                            "rgba(181,31,58,0.08)",
 
-                    borderWidth: 3,
+                        borderWidth:
+                            3,
 
-                    pointRadius: 3,
+                        pointRadius:
+                            3,
 
-                    pointHoverRadius: 6,
+                        pointHoverRadius:
+                            6,
 
-                    pointBackgroundColor:
-                        COLORS.red,
+                        pointBackgroundColor:
+                            COLORS.red,
 
-                    tension: 0.4,
+                        tension:
+                            0.4,
 
-                    fill: true
+                        fill:
+                            true
 
-                }]
+                    }]
 
-            },
+                },
 
+                options: {
 
-            options: {
+                    ...baseOptions,
 
-                ...baseOptions,
+                    scales: {
 
-                scales: {
+                        x: {
 
-                    x: {
+                            grid: {
+                                display: false
+                            },
 
-                        grid: {
-                            display: false
+                            ticks: {
+                                color:
+                                    COLORS.muted
+                            }
+
                         },
 
-                        ticks: {
-                            color: COLORS.muted
+                        y: {
+
+                            grid: {
+                                color:
+                                    "#f3e1e6"
+                            },
+
+                            ticks: {
+
+                                color:
+                                    COLORS.muted,
+
+                                callback:
+                                    value =>
+                                        money(value)
+
+                            }
+
                         }
 
                     },
 
-                    y: {
+                    plugins: {
 
-                        grid: {
-                            color: "#f3e1e6"
-                        },
+                        ...baseOptions.plugins,
 
-                        ticks: {
+                        tooltip: {
 
-                            color: COLORS.muted,
+                            ...baseOptions.plugins.tooltip,
 
-                            callback: value =>
-                                "£" +
-                                Number(value)
-                                    .toLocaleString(
-                                        "en-GB"
-                                    )
+                            callbacks: {
 
-                        }
+                                label:
+                                    context =>
+                                        money(
+                                            context.raw
+                                        )
 
-                    }
-
-                },
-
-
-                plugins: {
-
-                    ...baseOptions.plugins,
-
-                    tooltip: {
-
-                        ...baseOptions.plugins.tooltip,
-
-                        callbacks: {
-
-                            label: context =>
-                                money(context.raw)
+                            }
 
                         }
 
@@ -369,15 +475,13 @@ async function loadMonthly() {
                 }
 
             }
-
-        });
+        );
 
 }
 
 
 // ============================================================
 // COUNTRY REVENUE
-// PAGE 2
 // ============================================================
 
 async function loadCountries() {
@@ -386,240 +490,122 @@ async function loadCountries() {
         return;
     }
 
-
     const data =
-        await getData("/api/countries");
-
+        await getData(
+            "/api/countries"
+        );
 
     const top =
-        data
+        [...data]
             .sort(
                 (a, b) =>
-                    Number(b.Revenue) -
-                    Number(a.Revenue)
+                    Number(b.Revenue || 0) -
+                    Number(a.Revenue || 0)
             )
             .slice(0, 10);
 
-
-    const labels =
-        top.map(x => x.Country);
-
-
-    const values =
-        top.map(x => Number(x.Revenue));
-
-
-    const ctx =
-        document.getElementById("countryChart");
-
-
     charts.country =
-        new Chart(ctx, {
-
-            type: "bar",
-
-            data: {
-
-                labels,
-
-                datasets: [{
-
-                    label: "Revenue",
-
-                    data: values,
-
-                    backgroundColor:
-                        COLORS.red,
-
-                    hoverBackgroundColor:
-                        COLORS.redDark,
-
-                    borderRadius: 8,
-
-                    borderSkipped: false
-
-                }]
-
-            },
-
-
-            options: {
-
-                ...baseOptions,
-
-                indexAxis: "y",
-
-                scales: {
-
-                    x: {
-
-                        grid: {
-                            color: "#f3e1e6"
-                        },
-
-                        ticks: {
-
-                            color: COLORS.muted,
-
-                            callback: value =>
-                                "£" +
-                                Number(value)
-                                    .toLocaleString(
-                                        "en-GB"
-                                    )
-
-                        }
-
-                    },
-
-                    y: {
-
-                        grid: {
-                            display: false
-                        },
-
-                        ticks: {
-                            color: "#633747"
-                        }
-
-                    }
-
-                },
-
-
-                plugins: {
-
-                    ...baseOptions.plugins,
-
-                    tooltip: {
-
-                        ...baseOptions.plugins.tooltip,
-
-                        callbacks: {
-
-                            label: context =>
-                                money(context.raw)
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        });
-
-}
-
-
-// ============================================================
-// CUSTOMER SEGMENTS
-// PAGE 3
-// ============================================================
-
-async function loadSegments() {
-
-    if (
-        !exists("segmentChart") &&
-        !exists("segments")
-    ) {
-        return;
-    }
-
-
-    const data =
-        await getData("/api/segments");
-
-
-    // --------------------------------------------------------
-    // CHART
-    // --------------------------------------------------------
-
-    if (exists("segmentChart")) {
-
-        const labels =
-            data.map(x => x.Segment);
-
-
-        const customers =
-            data.map(
-                x => Number(x.Customers)
-            );
-
-
-        const ctx =
+        new Chart(
             document.getElementById(
-                "segmentChart"
-            );
+                "countryChart"
+            ),
+            {
 
-
-        charts.segment =
-            new Chart(ctx, {
-
-                type: "doughnut",
+                type: "bar",
 
                 data: {
 
-                    labels,
+                    labels:
+                        top.map(
+                            item =>
+                                item.Country
+                        ),
 
                     datasets: [{
 
-                        data: customers,
+                        data:
+                            top.map(
+                                item =>
+                                    Number(
+                                        item.Revenue
+                                    ) || 0
+                            ),
 
-                        backgroundColor: [
-
+                        backgroundColor:
                             COLORS.red,
 
-                            COLORS.rose,
+                        hoverBackgroundColor:
+                            COLORS.redDark,
 
-                            COLORS.pink,
+                        borderRadius:
+                            7,
 
-                            COLORS.soft,
-
-                            COLORS.muted
-
-                        ],
-
-                        borderColor:
-                            "#ffffff",
-
-                        borderWidth: 4,
-
-                        hoverOffset: 8
+                        borderSkipped:
+                            false
 
                     }]
 
                 },
 
-
                 options: {
 
                     ...baseOptions,
 
-                    cutout: "68%",
+                    indexAxis:
+                        "y",
+
+                    scales: {
+
+                        x: {
+
+                            grid: {
+                                color:
+                                    "#f3e1e6"
+                            },
+
+                            ticks: {
+
+                                color:
+                                    COLORS.muted,
+
+                                callback:
+                                    value =>
+                                        money(value)
+
+                            }
+
+                        },
+
+                        y: {
+
+                            grid: {
+                                display: false
+                            },
+
+                            ticks: {
+                                color:
+                                    COLORS.text
+                            }
+
+                        }
+
+                    },
 
                     plugins: {
 
                         ...baseOptions.plugins,
 
-                        legend: {
+                        tooltip: {
 
-                            display: true,
+                            ...baseOptions.plugins.tooltip,
 
-                            position: "bottom",
+                            callbacks: {
 
-                            labels: {
-
-                                color:
-                                    "#633747",
-
-                                padding: 18,
-
-                                usePointStyle: true,
-
-                                pointStyle:
-                                    "circle"
+                                label:
+                                    context =>
+                                        money(
+                                            context.raw
+                                        )
 
                             }
 
@@ -629,14 +615,120 @@ async function loadSegments() {
 
                 }
 
-            });
+            }
+        );
+
+}
+
+
+// ============================================================
+// CUSTOMER SEGMENTS
+// ============================================================
+
+async function loadSegments() {
+
+    const data =
+        await getData(
+            "/api/segments"
+        );
+
+    if (exists("segmentChart")) {
+
+        charts.segment =
+            new Chart(
+                document.getElementById(
+                    "segmentChart"
+                ),
+                {
+
+                    type:
+                        "doughnut",
+
+                    data: {
+
+                        labels:
+                            data.map(
+                                item =>
+                                    item.Segment
+                            ),
+
+                        datasets: [{
+
+                            data:
+                                data.map(
+                                    item =>
+                                        Number(
+                                            item.Customers
+                                        ) || 0
+                                ),
+
+                            backgroundColor: [
+
+                                COLORS.red,
+
+                                COLORS.rose,
+
+                                COLORS.pink,
+
+                                COLORS.soft,
+
+                                COLORS.muted
+
+                            ],
+
+                            borderColor:
+                                COLORS.white,
+
+                            borderWidth:
+                                4
+
+                        }]
+
+                    },
+
+                    options: {
+
+                        ...baseOptions,
+
+                        cutout:
+                            "68%",
+
+                        plugins: {
+
+                            ...baseOptions.plugins,
+
+                            legend: {
+
+                                display:
+                                    true,
+
+                                position:
+                                    "bottom",
+
+                                labels: {
+
+                                    color:
+                                        COLORS.text,
+
+                                    padding:
+                                        16,
+
+                                    usePointStyle:
+                                        true
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
 
     }
 
-
-    // --------------------------------------------------------
-    // SEGMENT LIST
-    // --------------------------------------------------------
 
     if (exists("segments")) {
 
@@ -645,51 +737,51 @@ async function loadSegments() {
                 "segments"
             );
 
-
         container.innerHTML = "";
-
 
         data.forEach(
             (segment, index) => {
+
+                const colors = [
+
+                    COLORS.red,
+
+                    COLORS.rose,
+
+                    COLORS.pink,
+
+                    COLORS.soft,
+
+                    COLORS.muted
+
+                ];
 
                 const div =
                     document.createElement(
                         "div"
                     );
 
-
                 div.className =
                     "segment-item";
-
 
                 div.innerHTML = `
 
                     <div class="segment-top">
 
-                        <span class="segment-name">
+                        <div class="segment-name">
 
-                            <span class="segment-dot"
-                                style="
-                                    background:
-                                    ${[
-                                        COLORS.red,
-                                        COLORS.rose,
-                                        COLORS.pink,
-                                        COLORS.soft,
-                                        COLORS.muted
-                                    ][index % 5]};
-                                ">
-                            </span>
+                            <span
+                                class="segment-dot"
+                                style="background:${colors[index % colors.length]}"
+                            ></span>
 
                             ${segment.Segment}
 
-                        </span>
+                        </div>
 
                         <span class="segment-count">
 
-                            ${number(
-                                segment.Customers
-                            )}
+                            ${number(segment.Customers)}
 
                             customers
 
@@ -697,35 +789,29 @@ async function loadSegments() {
 
                     </div>
 
-
                     <div class="segment-meta">
 
                         <span>
                             Recency
-                            ${Number(
-                                segment.Avg_Recency
-                            ).toFixed(1)}
+                            ${Number(segment.Avg_Recency || 0).toFixed(1)}
                         </span>
 
                         <span>
                             Frequency
-                            ${Number(
-                                segment.Avg_Frequency
-                            ).toFixed(1)}
+                            ${Number(segment.Avg_Frequency || 0).toFixed(1)}
                         </span>
 
                         <strong>
-                            ${money(
-                                segment.Total_Revenue
-                            )}
+                            ${money(segment.Total_Revenue)}
                         </strong>
 
                     </div>
 
                 `;
 
-
-                container.appendChild(div);
+                container.appendChild(
+                    div
+                );
 
             }
         );
@@ -736,8 +822,7 @@ async function loadSegments() {
 
 
 // ============================================================
-// TOP PRODUCTS
-// PAGE 3
+// PRODUCTS
 // ============================================================
 
 async function loadProducts() {
@@ -746,134 +831,115 @@ async function loadProducts() {
         return;
     }
 
-
     const data =
-        await getData("/api/products");
-
+        await getData(
+            "/api/products"
+        );
 
     const top =
-        data
+        [...data]
             .sort(
                 (a, b) =>
-                    Number(b.Revenue) -
-                    Number(a.Revenue)
+                    Number(b.Revenue || 0) -
+                    Number(a.Revenue || 0)
             )
             .slice(0, 10);
 
-
-    const labels =
-        top.map(
-            x =>
-                String(
-                    x.Description
-                ).substring(0, 30)
-        );
-
-
-    const values =
-        top.map(
-            x => Number(x.Revenue)
-        );
-
-
-    const ctx =
-        document.getElementById(
-            "productChart"
-        );
-
-
     charts.products =
-        new Chart(ctx, {
+        new Chart(
+            document.getElementById(
+                "productChart"
+            ),
+            {
 
-            type: "bar",
+                type:
+                    "bar",
 
-            data: {
+                data: {
 
-                labels,
+                    labels:
+                        top.map(
+                            item =>
+                                String(
+                                    item.Description ||
+                                    ""
+                                ).substring(
+                                    0,
+                                    30
+                                )
+                        ),
 
-                datasets: [{
+                    datasets: [{
 
-                    label: "Revenue",
+                        data:
+                            top.map(
+                                item =>
+                                    Number(
+                                        item.Revenue
+                                    ) || 0
+                            ),
 
-                    data: values,
+                        backgroundColor:
+                            COLORS.rose,
 
-                    backgroundColor:
-                        COLORS.rose,
+                        hoverBackgroundColor:
+                            COLORS.red,
 
-                    hoverBackgroundColor:
-                        COLORS.red,
+                        borderRadius:
+                            7,
 
-                    borderRadius: 7,
+                        borderSkipped:
+                            false
 
-                    borderSkipped: false
-
-                }]
-
-            },
-
-
-            options: {
-
-                ...baseOptions,
-
-                indexAxis: "y",
-
-                scales: {
-
-                    x: {
-
-                        grid: {
-                            color: "#f3e1e6"
-                        },
-
-                        ticks: {
-
-                            color: COLORS.muted,
-
-                            callback: value =>
-                                "£" +
-                                Number(value)
-                                    .toLocaleString(
-                                        "en-GB"
-                                    )
-
-                        }
-
-                    },
-
-                    y: {
-
-                        grid: {
-                            display: false
-                        },
-
-                        ticks: {
-
-                            color: "#633747",
-
-                            font: {
-                                size: 10
-                            }
-
-                        }
-
-                    }
+                    }]
 
                 },
 
+                options: {
 
-                plugins: {
+                    ...baseOptions,
 
-                    ...baseOptions.plugins,
+                    indexAxis:
+                        "y",
 
-                    tooltip: {
+                    scales: {
 
-                        ...baseOptions.plugins.tooltip,
+                        x: {
 
-                        callbacks: {
+                            grid: {
+                                color:
+                                    "#f3e1e6"
+                            },
 
-                            label: context =>
-                                money(context.raw)
+                            ticks: {
+
+                                color:
+                                    COLORS.muted,
+
+                                callback:
+                                    value =>
+                                        money(value)
+
+                            }
+
+                        },
+
+                        y: {
+
+                            grid: {
+                                display: false
+                            },
+
+                            ticks: {
+
+                                color:
+                                    COLORS.text,
+
+                                font: {
+                                    size: 10
+                                }
+
+                            }
 
                         }
 
@@ -882,15 +948,13 @@ async function loadProducts() {
                 }
 
             }
-
-        });
+        );
 
 }
 
 
 // ============================================================
 // PRODUCT PAIRS
-// PAGE 3
 // ============================================================
 
 async function loadPairs() {
@@ -899,17 +963,17 @@ async function loadPairs() {
         return;
     }
 
-
     const data =
-        await getData("/api/pairs");
-
+        await getData(
+            "/api/pairs"
+        );
 
     const container =
-        document.getElementById("pairs");
-
+        document.getElementById(
+            "pairs"
+        );
 
     container.innerHTML = "";
-
 
     data
         .slice(0, 12)
@@ -920,10 +984,8 @@ async function loadPairs() {
                     "div"
                 );
 
-
             div.className =
                 "pair-item";
-
 
             div.innerHTML = `
 
@@ -955,8 +1017,9 @@ async function loadPairs() {
 
             `;
 
-
-            container.appendChild(div);
+            container.appendChild(
+                div
+            );
 
         });
 
@@ -964,8 +1027,7 @@ async function loadPairs() {
 
 
 // ============================================================
-// DAY OF WEEK
-// PAGE 3
+// DAY REVENUE
 // ============================================================
 
 async function loadDays() {
@@ -974,114 +1036,88 @@ async function loadDays() {
         return;
     }
 
-
     const data =
-        await getData("/api/days");
-
-
-    const labels =
-        data.map(x => x.DayOfWeek);
-
-
-    const values =
-        data.map(
-            x => Number(x.Revenue) || 0
+        await getData(
+            "/api/days"
         );
-
-
-    const ctx =
-        document.getElementById(
-            "dayChart"
-        );
-
 
     charts.days =
-        new Chart(ctx, {
+        new Chart(
+            document.getElementById(
+                "dayChart"
+            ),
+            {
 
-            type: "bar",
+                type:
+                    "bar",
 
-            data: {
+                data: {
 
-                labels,
+                    labels:
+                        data.map(
+                            item =>
+                                item.DayOfWeek
+                        ),
 
-                datasets: [{
+                    datasets: [{
 
-                    label: "Revenue",
+                        data:
+                            data.map(
+                                item =>
+                                    Number(
+                                        item.Revenue
+                                    ) || 0
+                            ),
 
-                    data: values,
+                        backgroundColor:
+                            COLORS.pink,
 
-                    backgroundColor:
-                        COLORS.pink,
+                        hoverBackgroundColor:
+                            COLORS.red,
 
-                    hoverBackgroundColor:
-                        COLORS.red,
+                        borderRadius:
+                            7
 
-                    borderRadius: 8,
-
-                    borderSkipped: false
-
-                }]
-
-            },
-
-
-            options: {
-
-                ...baseOptions,
-
-                scales: {
-
-                    x: {
-
-                        grid: {
-                            display: false
-                        },
-
-                        ticks: {
-                            color:
-                                COLORS.muted
-                        }
-
-                    },
-
-                    y: {
-
-                        grid: {
-                            color:
-                                "#f3e1e6"
-                        },
-
-                        ticks: {
-
-                            color:
-                                COLORS.muted,
-
-                            callback: value =>
-                                "£" +
-                                Number(value)
-                                    .toLocaleString(
-                                        "en-GB"
-                                    )
-
-                        }
-
-                    }
+                    }]
 
                 },
 
+                options: {
 
-                plugins: {
+                    ...baseOptions,
 
-                    ...baseOptions.plugins,
+                    scales: {
 
-                    tooltip: {
+                        x: {
 
-                        ...baseOptions.plugins.tooltip,
+                            grid: {
+                                display: false
+                            },
 
-                        callbacks: {
+                            ticks: {
+                                color:
+                                    COLORS.muted
+                            }
 
-                            label: context =>
-                                money(context.raw)
+                        },
+
+                        y: {
+
+                            grid: {
+                                color:
+                                    "#f3e1e6"
+                            },
+
+                            ticks: {
+
+                                color:
+                                    COLORS.muted,
+
+                                callback:
+                                    value =>
+                                        money(value)
+
+                            }
 
                         }
 
@@ -1090,15 +1126,13 @@ async function loadDays() {
                 }
 
             }
-
-        });
+        );
 
 }
 
 
 // ============================================================
-// HOURLY BEHAVIOR
-// PAGE 3
+// HOURLY REVENUE
 // ============================================================
 
 async function loadHours() {
@@ -1107,125 +1141,103 @@ async function loadHours() {
         return;
     }
 
-
     const data =
-        await getData("/api/hours");
-
-
-    const labels =
-        data.map(
-            x => `${x.Hour}:00`
+        await getData(
+            "/api/hours"
         );
-
-
-    const values =
-        data.map(
-            x => Number(x.Revenue) || 0
-        );
-
-
-    const ctx =
-        document.getElementById(
-            "hourChart"
-        );
-
 
     charts.hours =
-        new Chart(ctx, {
+        new Chart(
+            document.getElementById(
+                "hourChart"
+            ),
+            {
 
-            type: "line",
+                type:
+                    "line",
 
-            data: {
+                data: {
 
-                labels,
+                    labels:
+                        data.map(
+                            item =>
+                                `${item.Hour}:00`
+                        ),
 
-                datasets: [{
+                    datasets: [{
 
-                    label: "Revenue",
+                        data:
+                            data.map(
+                                item =>
+                                    Number(
+                                        item.Revenue
+                                    ) || 0
+                            ),
 
-                    data: values,
+                        borderColor:
+                            COLORS.red,
 
-                    borderColor:
-                        COLORS.red,
+                        backgroundColor:
+                            "rgba(181,31,58,0.08)",
 
-                    backgroundColor:
-                        "rgba(181,31,58,0.08)",
+                        borderWidth:
+                            3,
 
-                    borderWidth: 3,
+                        pointRadius:
+                            3,
 
-                    pointRadius: 3,
+                        pointHoverRadius:
+                            6,
 
-                    pointHoverRadius: 7,
+                        pointBackgroundColor:
+                            COLORS.red,
 
-                    pointBackgroundColor:
-                        COLORS.red,
+                        tension:
+                            0.4,
 
-                    tension: 0.4,
+                        fill:
+                            true
 
-                    fill: true
-
-                }]
-
-            },
-
-
-            options: {
-
-                ...baseOptions,
-
-                scales: {
-
-                    x: {
-
-                        grid: {
-                            display: false
-                        },
-
-                        ticks: {
-                            color:
-                                COLORS.muted
-                        }
-
-                    },
-
-                    y: {
-
-                        grid: {
-                            color:
-                                "#f3e1e6"
-                        },
-
-                        ticks: {
-
-                            color:
-                                COLORS.muted,
-
-                            callback: value =>
-                                "£" +
-                                Number(value)
-                                    .toLocaleString(
-                                        "en-GB"
-                                    )
-
-                        }
-
-                    }
+                    }]
 
                 },
 
+                options: {
 
-                plugins: {
+                    ...baseOptions,
 
-                    ...baseOptions.plugins,
+                    scales: {
 
-                    tooltip: {
+                        x: {
 
-                        ...baseOptions.plugins.tooltip,
+                            grid: {
+                                display: false
+                            },
 
-                        callbacks: {
+                            ticks: {
+                                color:
+                                    COLORS.muted
+                            }
 
-                            label: context =>
-                                money(context.raw)
+                        },
+
+                        y: {
+
+                            grid: {
+                                color:
+                                    "#f3e1e6"
+                            },
+
+                            ticks: {
+
+                                color:
+                                    COLORS.muted,
+
+                                callback:
+                                    value =>
+                                        money(value)
+
+                            }
 
                         }
 
@@ -1234,108 +1246,59 @@ async function loadHours() {
                 }
 
             }
-
-        });
+        );
 
 }
 
 
 // ============================================================
-// PAGE DETECTION
-// ============================================================
-
-function detectPage() {
-
-    if (exists("monthlyChart")) {
-        return "overview";
-    }
-
-    if (
-        exists("segmentChart") ||
-        exists("productChart") ||
-        exists("dayChart") ||
-        exists("hourChart")
-    ) {
-        return "intelligence";
-    }
-
-    return "landing";
-}
-
-
-// ============================================================
-// INITIALIZE
+// LOAD EVERYTHING
 // ============================================================
 
 async function initializeDashboard() {
 
     loadUserRole();
 
-
-    const page =
-        detectPage();
-
+    setupNavigation();
 
     try {
 
-        // ----------------------------------------------------
-        // PAGE 2
-        // ----------------------------------------------------
+        await Promise.all([
 
-        if (page === "overview") {
+            loadKPIs(),
 
-            await Promise.all([
+            loadMonthly(),
 
-                loadKPIs(),
+            loadCountries(),
 
-                loadMonthly(),
+            loadSegments(),
 
-                loadCountries()
+            loadProducts(),
 
-            ]);
+            loadPairs(),
 
-        }
+            loadDays(),
 
+            loadHours()
 
-        // ----------------------------------------------------
-        // PAGE 3
-        // ----------------------------------------------------
-
-        else if (page === "intelligence") {
-
-            await Promise.all([
-
-                loadSegments(),
-
-                loadProducts(),
-
-                loadPairs(),
-
-                loadDays(),
-
-                loadHours()
-
-            ]);
-
-        }
-
+        ]);
 
         console.log(
-            `CBI ${page} page loaded successfully.`
+            "Consumer Behavior Intelligence loaded successfully."
         );
 
     }
 
-
     catch (error) {
 
         console.error(
-            "Consumer Behavior Intelligence error:",
+            "Dashboard loading error:",
             error
         );
 
-
-        showDataError();
+        showDataError(
+            error.message
+        );
 
     }
 
@@ -1343,34 +1306,47 @@ async function initializeDashboard() {
 
 
 // ============================================================
-// ERROR STATE
+// ERROR
 // ============================================================
 
-function showDataError() {
+function showDataError(errorText) {
 
-    const message =
-        document.createElement("div");
+    const existing =
+        document.querySelector(
+            ".data-error"
+        );
 
+    if (existing) {
+        existing.remove();
+    }
 
-    message.className =
+    const error =
+        document.createElement(
+            "div"
+        );
+
+    error.className =
         "data-error";
 
-
-    message.innerHTML = `
+    error.innerHTML = `
 
         <strong>
-            Unable to load analytics data.
+            Dashboard data could not be loaded.
         </strong>
 
         <span>
-            Please check that the Flask API
-            is running correctly.
+            ${errorText}
         </span>
+
+        <small>
+            Check /api/status to verify your CSV files.
+        </small>
 
     `;
 
-
-    document.body.appendChild(message);
+    document.body.prepend(
+        error
+    );
 
 }
 
@@ -1383,4 +1359,3 @@ document.addEventListener(
     "DOMContentLoaded",
     initializeDashboard
 );
-```
