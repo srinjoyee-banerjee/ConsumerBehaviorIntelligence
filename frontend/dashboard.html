@@ -1,17 +1,17 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
 
     <title>
-        CBI — Business Overview
+        CBI | Analytics Dashboard
     </title>
 
     <link
@@ -19,31 +19,28 @@
         href="/style.css"
     >
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/chart.js"
-    ></script>
-
 </head>
 
 
 <body>
 
-<div class="app-shell">
+
+<div class="app">
 
 
     <!-- =====================================================
-         TOP NAVIGATION
+         SIDEBAR
     ====================================================== -->
 
-    <header class="topbar">
+    <aside class="sidebar">
 
-        <div class="brand">
+        <div class="sidebar-brand">
 
-            <div class="brand-mark">
+            <div class="brand-mark small">
                 CBI
             </div>
 
-            <div class="brand-text">
+            <div>
 
                 <strong>
                     Consumer Behavior
@@ -58,299 +55,255 @@
         </div>
 
 
-        <nav class="page-nav">
+        <nav>
 
-            <a
-                href="/dashboard.html"
-                class="active"
+            <button
+                class="nav-button active"
+                data-section="overview"
             >
-                Overview
-            </a>
 
-            <a href="/intelligence.html">
-                Customer Intelligence
-            </a>
+                <span>01</span>
+
+                Overview
+
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-section="intelligence"
+            >
+
+                <span>02</span>
+
+                Intelligence
+
+            </button>
 
         </nav>
 
 
-        <div class="user-badge">
+        <div class="sidebar-bottom">
 
-            <span>
-                VIEWING AS
-            </span>
-
-            <strong id="userRole">
-                Business Executive
-            </strong>
+            <a href="/">
+                ← Home
+            </a>
 
         </div>
 
-    </header>
-
+    </aside>
 
 
     <!-- =====================================================
-         PAGE HEADER
+         MAIN
     ====================================================== -->
 
-    <main class="dashboard-page">
+    <main class="main">
 
-        <section class="page-heading">
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="topbar">
 
             <div>
 
-                <div class="eyebrow">
-                    02 / BUSINESS OVERVIEW
-                </div>
-
-                <h1>
-                    Business
-                    <span>Performance.</span>
-                </h1>
-
-                <p>
-                    A high-level view of revenue,
-                    customers and geographic performance.
+                <p class="eyebrow">
+                    ANALYTICS PLATFORM
                 </p>
 
-            </div>
-
-
-            <div class="dataset-status">
-
-                <span class="status-dot"></span>
-
-                ONLINE RETAIL DATA
-
-                <small>
-                    2010–2011
-                </small>
+                <h1>
+                    Consumer Behavior
+                    <span>Intelligence</span>
+                </h1>
 
             </div>
 
-        </section>
+
+            <div class="user-pill">
+
+                <div class="user-dot"></div>
+
+                <span id="userRole">
+                    Analytics User
+                </span>
+
+            </div>
+
+        </header>
 
 
 
         <!-- =================================================
-             KPI SECTION
+             OVERVIEW
         ================================================== -->
 
-        <section class="overview-section">
+        <section
+            id="overview"
+            class="dashboard-section active"
+        >
 
             <div class="section-heading">
 
-                <span>
-                    CORE METRICS
-                </span>
+                <div>
 
-                <h2>
-                    At a glance
-                </h2>
+                    <p class="eyebrow">
+                        01 / OVERVIEW
+                    </p>
+
+                    <h2>
+                        Business Performance
+                    </h2>
+
+                    <p>
+                        High-level view of revenue,
+                        orders and customer activity.
+                    </p>
+
+                </div>
 
             </div>
 
+
+            <!-- KPI CARDS -->
 
             <div class="kpi-grid">
 
 
                 <div class="kpi-card">
 
-                    <div class="kpi-top">
-                        <span>
-                            TOTAL REVENUE
-                        </span>
-
-                        <span class="kpi-index">
-                            01
-                        </span>
+                    <div class="kpi-label">
+                        TOTAL REVENUE
                     </div>
 
-                    <strong id="revenue">
+                    <div
+                        id="revenue"
+                        class="kpi-value"
+                    >
                         —
-                    </strong>
+                    </div>
 
-                    <p>
-                        Overall sales revenue
-                    </p>
+                    <div class="kpi-accent"></div>
 
                 </div>
 
 
                 <div class="kpi-card">
 
-                    <div class="kpi-top">
-                        <span>
-                            TOTAL ORDERS
-                        </span>
-
-                        <span class="kpi-index">
-                            02
-                        </span>
+                    <div class="kpi-label">
+                        TOTAL ORDERS
                     </div>
 
-                    <strong id="orders">
+                    <div
+                        id="orders"
+                        class="kpi-value"
+                    >
                         —
-                    </strong>
+                    </div>
 
-                    <p>
-                        Unique invoices
-                    </p>
+                    <div class="kpi-accent"></div>
 
                 </div>
 
 
                 <div class="kpi-card">
 
-                    <div class="kpi-top">
-                        <span>
-                            CUSTOMERS
-                        </span>
-
-                        <span class="kpi-index">
-                            03
-                        </span>
+                    <div class="kpi-label">
+                        TOTAL CUSTOMERS
                     </div>
 
-                    <strong id="customers">
+                    <div
+                        id="customers"
+                        class="kpi-value"
+                    >
                         —
-                    </strong>
+                    </div>
 
-                    <p>
-                        Identified customers
-                    </p>
+                    <div class="kpi-accent"></div>
 
                 </div>
 
 
-                <div class="kpi-card accent-card">
+                <div class="kpi-card">
 
-                    <div class="kpi-top">
-                        <span>
-                            UK REVENUE SHARE
-                        </span>
-
-                        <span class="kpi-index">
-                            04
-                        </span>
+                    <div class="kpi-label">
+                        UK REVENUE SHARE
                     </div>
 
-                    <strong id="uk-share">
+                    <div
+                        id="uk-share"
+                        class="kpi-value"
+                    >
                         —
-                    </strong>
-
-                    <p>
-                        Contribution from UK
-                    </p>
-
-                </div>
-
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             REVENUE
-        ================================================== -->
-
-        <section class="analytics-section">
-
-            <div class="section-heading">
-
-                <span>
-                    REVENUE ANALYTICS
-                </span>
-
-                <h2>
-                    Revenue trajectory
-                </h2>
-
-            </div>
-
-
-            <div class="analytics-card large-card">
-
-                <div class="card-heading">
-
-                    <div>
-
-                        <span>
-                            MONTHLY PERFORMANCE
-                        </span>
-
-                        <h3>
-                            Revenue over time
-                        </h3>
-
                     </div>
 
-                    <div class="chart-tag">
-                        2010 — 2011
-                    </div>
+                    <div class="kpi-accent"></div>
 
                 </div>
 
 
-                <div class="chart-container">
-
-                    <canvas
-                        id="monthlyChart"
-                    ></canvas>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             MARKET
-        ================================================== -->
-
-        <section class="analytics-section">
-
-            <div class="section-heading">
-
-                <span>
-                    MARKET INTELLIGENCE
-                </span>
-
-                <h2>
-                    Geographic performance
-                </h2>
-
             </div>
 
 
-            <div class="overview-grid">
+
+            <!-- OVERVIEW CHARTS -->
+
+            <div class="chart-grid two">
 
 
-                <div class="analytics-card">
+                <article class="panel large">
 
-                    <div class="card-heading">
+                    <div class="panel-header">
 
                         <div>
 
-                            <span>
-                                GEOGRAPHY
-                            </span>
+                            <p class="panel-kicker">
+                                REVENUE TREND
+                            </p>
 
                             <h3>
-                                Top countries
+                                Monthly Revenue
+                            </h3>
+
+                        </div>
+
+                        <span class="chart-tag">
+                            TIME SERIES
+                        </span>
+
+                    </div>
+
+                    <div class="chart-container">
+
+                        <canvas
+                            id="monthlyChart"
+                        ></canvas>
+
+                    </div>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="panel-kicker">
+                                GEOGRAPHY
+                            </p>
+
+                            <h3>
+                                Revenue by Country
                             </h3>
 
                         </div>
 
                     </div>
 
-
-                    <div class="chart-container medium">
+                    <div class="chart-container">
 
                         <canvas
                             id="countryChart"
@@ -358,122 +311,257 @@
 
                     </div>
 
-                </div>
-
-
-
-                <div class="insight-panel">
-
-                    <span>
-                        MARKET CONCENTRATION
-                    </span>
-
-                    <h3>
-                        United Kingdom
-                    </h3>
-
-                    <div
-                        class="insight-number"
-                        id="uk-share-insight"
-                    >
-                        —
-                    </div>
-
-                    <p>
-                        of total revenue is generated
-                        from the UK market.
-                    </p>
-
-
-                    <div class="insight-line"></div>
-
-
-                    <span>
-                        BUSINESS SIGNAL
-                    </span>
-
-                    <p>
-                        Strong geographic concentration
-                        indicates a significant dependence
-                        on the domestic customer base.
-                    </p>
-
-                </div>
+                </article>
 
 
             </div>
+
 
         </section>
 
 
 
         <!-- =================================================
-             NEXT PAGE
+             INTELLIGENCE
         ================================================== -->
 
-        <section class="next-page">
+        <section
+            id="intelligence"
+            class="dashboard-section"
+        >
 
-            <div>
+            <div class="section-heading">
 
-                <span>
-                    NEXT
-                </span>
+                <div>
 
-                <h2>
-                    Explore customer
-                    <span>intelligence.</span>
-                </h2>
+                    <p class="eyebrow">
+                        02 / INTELLIGENCE
+                    </p>
+
+                    <h2>
+                        Customer & Product Intelligence
+                    </h2>
+
+                    <p>
+                        Explore customer segments,
+                        products and purchasing patterns.
+                    </p>
+
+                </div>
 
             </div>
 
-            <a
-                href="/intelligence.html"
-                class="next-button"
-            >
-                Continue
-                <span>→</span>
-            </a>
+
+
+            <!-- SEGMENTS -->
+
+            <div class="chart-grid two">
+
+
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="panel-kicker">
+                                CUSTOMER BASE
+                            </p>
+
+                            <h3>
+                                Customer Segments
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div class="donut-container">
+
+                        <canvas
+                            id="segmentChart"
+                        ></canvas>
+
+                    </div>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="panel-kicker">
+                                SEGMENT DETAILS
+                            </p>
+
+                            <h3>
+                                Customer Profiles
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="segments"
+                        class="segment-list"
+                    ></div>
+
+                </article>
+
+
+            </div>
+
+
+
+            <!-- PRODUCTS -->
+
+            <div class="chart-grid two">
+
+
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="panel-kicker">
+                                PRODUCT PERFORMANCE
+                            </p>
+
+                            <h3>
+                                Top Products
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div class="chart-container tall">
+
+                        <canvas
+                            id="productChart"
+                        ></canvas>
+
+                    </div>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="panel-kicker">
+                                BASKET ANALYSIS
+                            </p>
+
+                            <h3>
+                                Product Pairs
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="pairs"
+                        class="pair-list"
+                    ></div>
+
+                </article>
+
+
+            </div>
+
+
+
+            <!-- TIME BEHAVIOR -->
+
+            <div class="chart-grid two">
+
+
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="panel-kicker">
+                                WEEKLY BEHAVIOR
+                            </p>
+
+                            <h3>
+                                Revenue by Day
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div class="chart-container">
+
+                        <canvas
+                            id="dayChart"
+                        ></canvas>
+
+                    </div>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <p class="panel-kicker">
+                                HOURLY BEHAVIOR
+                            </p>
+
+                            <h3>
+                                Revenue by Hour
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div class="chart-container">
+
+                        <canvas
+                            id="hourChart"
+                        ></canvas>
+
+                    </div>
+
+                </article>
+
+
+            </div>
+
 
         </section>
 
 
     </main>
 
-
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
-    <footer class="site-footer">
-
-        <span>
-            CONSUMER BEHAVIOR INTELLIGENCE
-        </span>
-
-        <span>
-            DATA ANALYTICS PORTFOLIO PROJECT
-        </span>
-
-    </footer>
-
 </div>
 
 
-<script>
+<!-- =========================================================
+     CHART.JS
+========================================================== -->
 
-const role =
-    localStorage.getItem("cbiUserRole");
-
-if (role) {
-
-    document.getElementById(
-        "userRole"
-    ).textContent = role;
-
-}
-
-</script>
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"
+></script>
 
 
 <script
@@ -484,4 +572,3 @@ if (role) {
 </body>
 
 </html>
-```
