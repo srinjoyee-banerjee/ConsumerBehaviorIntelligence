@@ -1,0 +1,487 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        CBI — Business Overview
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/style.css"
+    >
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
+
+</head>
+
+
+<body>
+
+<div class="app-shell">
+
+
+    <!-- =====================================================
+         TOP NAVIGATION
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                CBI
+            </div>
+
+            <div class="brand-text">
+
+                <strong>
+                    Consumer Behavior
+                </strong>
+
+                <span>
+                    Intelligence
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="page-nav">
+
+            <a
+                href="/dashboard.html"
+                class="active"
+            >
+                Overview
+            </a>
+
+            <a href="/intelligence.html">
+                Customer Intelligence
+            </a>
+
+        </nav>
+
+
+        <div class="user-badge">
+
+            <span>
+                VIEWING AS
+            </span>
+
+            <strong id="userRole">
+                Business Executive
+            </strong>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <main class="dashboard-page">
+
+        <section class="page-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    02 / BUSINESS OVERVIEW
+                </div>
+
+                <h1>
+                    Business
+                    <span>Performance.</span>
+                </h1>
+
+                <p>
+                    A high-level view of revenue,
+                    customers and geographic performance.
+                </p>
+
+            </div>
+
+
+            <div class="dataset-status">
+
+                <span class="status-dot"></span>
+
+                ONLINE RETAIL DATA
+
+                <small>
+                    2010–2011
+                </small>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             KPI SECTION
+        ================================================== -->
+
+        <section class="overview-section">
+
+            <div class="section-heading">
+
+                <span>
+                    CORE METRICS
+                </span>
+
+                <h2>
+                    At a glance
+                </h2>
+
+            </div>
+
+
+            <div class="kpi-grid">
+
+
+                <div class="kpi-card">
+
+                    <div class="kpi-top">
+                        <span>
+                            TOTAL REVENUE
+                        </span>
+
+                        <span class="kpi-index">
+                            01
+                        </span>
+                    </div>
+
+                    <strong id="revenue">
+                        —
+                    </strong>
+
+                    <p>
+                        Overall sales revenue
+                    </p>
+
+                </div>
+
+
+                <div class="kpi-card">
+
+                    <div class="kpi-top">
+                        <span>
+                            TOTAL ORDERS
+                        </span>
+
+                        <span class="kpi-index">
+                            02
+                        </span>
+                    </div>
+
+                    <strong id="orders">
+                        —
+                    </strong>
+
+                    <p>
+                        Unique invoices
+                    </p>
+
+                </div>
+
+
+                <div class="kpi-card">
+
+                    <div class="kpi-top">
+                        <span>
+                            CUSTOMERS
+                        </span>
+
+                        <span class="kpi-index">
+                            03
+                        </span>
+                    </div>
+
+                    <strong id="customers">
+                        —
+                    </strong>
+
+                    <p>
+                        Identified customers
+                    </p>
+
+                </div>
+
+
+                <div class="kpi-card accent-card">
+
+                    <div class="kpi-top">
+                        <span>
+                            UK REVENUE SHARE
+                        </span>
+
+                        <span class="kpi-index">
+                            04
+                        </span>
+                    </div>
+
+                    <strong id="uk-share">
+                        —
+                    </strong>
+
+                    <p>
+                        Contribution from UK
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             REVENUE
+        ================================================== -->
+
+        <section class="analytics-section">
+
+            <div class="section-heading">
+
+                <span>
+                    REVENUE ANALYTICS
+                </span>
+
+                <h2>
+                    Revenue trajectory
+                </h2>
+
+            </div>
+
+
+            <div class="analytics-card large-card">
+
+                <div class="card-heading">
+
+                    <div>
+
+                        <span>
+                            MONTHLY PERFORMANCE
+                        </span>
+
+                        <h3>
+                            Revenue over time
+                        </h3>
+
+                    </div>
+
+                    <div class="chart-tag">
+                        2010 — 2011
+                    </div>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <canvas
+                        id="monthlyChart"
+                    ></canvas>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             MARKET
+        ================================================== -->
+
+        <section class="analytics-section">
+
+            <div class="section-heading">
+
+                <span>
+                    MARKET INTELLIGENCE
+                </span>
+
+                <h2>
+                    Geographic performance
+                </h2>
+
+            </div>
+
+
+            <div class="overview-grid">
+
+
+                <div class="analytics-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <span>
+                                GEOGRAPHY
+                            </span>
+
+                            <h3>
+                                Top countries
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container medium">
+
+                        <canvas
+                            id="countryChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="insight-panel">
+
+                    <span>
+                        MARKET CONCENTRATION
+                    </span>
+
+                    <h3>
+                        United Kingdom
+                    </h3>
+
+                    <div
+                        class="insight-number"
+                        id="uk-share-insight"
+                    >
+                        —
+                    </div>
+
+                    <p>
+                        of total revenue is generated
+                        from the UK market.
+                    </p>
+
+
+                    <div class="insight-line"></div>
+
+
+                    <span>
+                        BUSINESS SIGNAL
+                    </span>
+
+                    <p>
+                        Strong geographic concentration
+                        indicates a significant dependence
+                        on the domestic customer base.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             NEXT PAGE
+        ================================================== -->
+
+        <section class="next-page">
+
+            <div>
+
+                <span>
+                    NEXT
+                </span>
+
+                <h2>
+                    Explore customer
+                    <span>intelligence.</span>
+                </h2>
+
+            </div>
+
+            <a
+                href="/intelligence.html"
+                class="next-button"
+            >
+                Continue
+                <span>→</span>
+            </a>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="site-footer">
+
+        <span>
+            CONSUMER BEHAVIOR INTELLIGENCE
+        </span>
+
+        <span>
+            DATA ANALYTICS PORTFOLIO PROJECT
+        </span>
+
+    </footer>
+
+</div>
+
+
+<script>
+
+const role =
+    localStorage.getItem("cbiUserRole");
+
+if (role) {
+
+    document.getElementById(
+        "userRole"
+    ).textContent = role;
+
+}
+
+</script>
+
+
+<script
+    src="/script.js"
+></script>
+
+
+</body>
+
+</html>
+```
