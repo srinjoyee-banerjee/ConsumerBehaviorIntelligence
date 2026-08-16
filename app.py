@@ -7,15 +7,14 @@ from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 import pandas as pd
 import os
+import numpy as np
 
 
 # ============================================================
-# APPLICATION CONFIGURATION
+# PATHS
 # ============================================================
 
-BASE_DIR = os.path.dirname(
-    os.path.abspath(__file__)
-)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 FRONTEND_DIR = os.path.join(
     BASE_DIR,
@@ -27,6 +26,11 @@ DATA_DIR = os.path.join(
     "dashboard_data"
 )
 
+
+# ============================================================
+# APPLICATION
+# ============================================================
+
 app = Flask(
     __name__,
     static_folder=FRONTEND_DIR,
@@ -37,30 +41,50 @@ CORS(app)
 
 
 # ============================================================
-# DATA LOADER
+# DATASETS
+# ============================================================
+
+DATASETS = {
+    "kpis": "kpis.csv",
+    "monthly": "monthly_revenue.csv",
+    "countries": "country_revenue.csv",
+    "segments": "customer_segments.csv",
+    "products": "product_revenue.csv",
+    "pairs": "product_pairs.csv",
+    "days": "day_revenue.csv",
+    "hours": "hour_revenue.csv"
+}
+
+
+# ============================================================
+# LOAD CSV
 # ============================================================
 
 def load_csv(filename):
 
-    path = os.path.join(
-        DATA_DIR,
-        filename
-    )
+    path = os.path.join(DATA_DIR, filename)
 
     if not os.path.isfile(path):
+
         raise FileNotFoundError(
             f"Dataset not found: {filename}"
         )
 
     df = pd.read_csv(path)
 
-    # Convert NaN / inf values to JSON-safe None
+    # Remove accidental whitespace from column names
+    df.columns = [
+        str(column).strip()
+        for column in df.columns
+    ]
+
+    # Convert pandas NaN / inf into JSON-safe values
     df = df.replace(
-        [float("inf"), float("-inf")],
-        None
+        [np.inf, -np.inf],
+        np.nan
     )
 
-    df = df.where(
+    df = df.astype(object).where(
         pd.notnull(df),
         None
     )
@@ -68,17 +92,21 @@ def load_csv(filename):
     return df
 
 
+# ============================================================
+# CSV RESPONSE
+# ============================================================
+
 def csv_response(filename):
 
     try:
 
         df = load_csv(filename)
 
-        return jsonify(
-            df.to_dict(
-                orient="records"
-            )
+        records = df.to_dict(
+            orient="records"
         )
+
+        return jsonify(records)
 
     except FileNotFoundError as error:
 
@@ -95,7 +123,7 @@ def csv_response(filename):
 
 
 # ============================================================
-# FRONTEND
+# HOME
 # ============================================================
 
 @app.route("/")
@@ -107,15 +135,19 @@ def index():
     )
 
 
+# ============================================================
+# FRONTEND FILES
+# ============================================================
+
 @app.route("/<path:filename>")
 def frontend_files(filename):
 
-    file_path = os.path.join(
+    path = os.path.join(
         FRONTEND_DIR,
         filename
     )
 
-    if os.path.isfile(file_path):
+    if os.path.isfile(path):
 
         return send_from_directory(
             FRONTEND_DIR,
@@ -123,75 +155,76 @@ def frontend_files(filename):
         )
 
     return jsonify({
-        "error": "Frontend file not found"
+        "error": "Frontend file not found",
+        "file": filename
     }), 404
 
 
 # ============================================================
-# DASHBOARD API
+# API ROUTES
 # ============================================================
 
-@app.route("/api/kpis", methods=["GET"])
+@app.route("/api/kpis")
 def api_kpis():
 
     return csv_response(
-        "kpis.csv"
+        DATASETS["kpis"]
     )
 
 
-@app.route("/api/monthly", methods=["GET"])
+@app.route("/api/monthly")
 def api_monthly():
 
     return csv_response(
-        "monthly_revenue.csv"
+        DATASETS["monthly"]
     )
 
 
-@app.route("/api/countries", methods=["GET"])
+@app.route("/api/countries")
 def api_countries():
 
     return csv_response(
-        "country_revenue.csv"
+        DATASETS["countries"]
     )
 
 
-@app.route("/api/products", methods=["GET"])
-def api_products():
-
-    return csv_response(
-        "product_revenue.csv"
-    )
-
-
-@app.route("/api/segments", methods=["GET"])
+@app.route("/api/segments")
 def api_segments():
 
     return csv_response(
-        "customer_segments.csv"
+        DATASETS["segments"]
     )
 
 
-@app.route("/api/days", methods=["GET"])
-def api_days():
+@app.route("/api/products")
+def api_products():
 
     return csv_response(
-        "day_revenue.csv"
+        DATASETS["products"]
     )
 
 
-@app.route("/api/hours", methods=["GET"])
-def api_hours():
-
-    return csv_response(
-        "hour_revenue.csv"
-    )
-
-
-@app.route("/api/pairs", methods=["GET"])
+@app.route("/api/pairs")
 def api_pairs():
 
     return csv_response(
-        "product_pairs.csv"
+        DATASETS["pairs"]
+    )
+
+
+@app.route("/api/days")
+def api_days():
+
+    return csv_response(
+        DATASETS["days"]
+    )
+
+
+@app.route("/api/hours")
+def api_hours():
+
+    return csv_response(
+        DATASETS["hours"]
     )
 
 
@@ -199,34 +232,42 @@ def api_pairs():
 # API STATUS
 # ============================================================
 
-@app.route("/api/status", methods=["GET"])
+@app.route("/api/status")
 def api_status():
 
-    datasets = [
-        "kpis.csv",
-        "monthly_revenue.csv",
-        "country_revenue.csv",
-        "product_revenue.csv",
-        "customer_segments.csv",
-        "day_revenue.csv",
-        "hour_revenue.csv",
-        "product_pairs.csv"
-    ]
+    result = {}
 
-    available = []
-    missing = []
-
-    for filename in datasets:
+    for key, filename in DATASETS.items():
 
         path = os.path.join(
             DATA_DIR,
             filename
         )
 
+        result[key] = {
+            "file": filename,
+            "exists": os.path.isfile(path)
+        }
+
         if os.path.isfile(path):
-            available.append(filename)
-        else:
-            missing.append(filename)
+
+            try:
+
+                df = pd.read_csv(path)
+
+                result[key]["rows"] = len(df)
+                result[key]["columns"] = list(
+                    df.columns
+                )
+
+            except Exception as error:
+
+                result[key]["error"] = str(error)
+
+    available = sum(
+        item["exists"]
+        for item in result.values()
+    )
 
     return jsonify({
 
@@ -237,25 +278,22 @@ def api_status():
             "healthy",
 
         "datasets_available":
-            len(available),
-
-        "datasets_total":
-            len(datasets),
-
-        "available":
             available,
 
-        "missing":
-            missing
+        "datasets_total":
+            len(DATASETS),
+
+        "datasets":
+            result
 
     })
 
 
 # ============================================================
-# HEALTH CHECK
+# HEALTH
 # ============================================================
 
-@app.route("/health", methods=["GET"])
+@app.route("/health")
 def health():
 
     return jsonify({
@@ -267,11 +305,8 @@ def health():
             "Consumer Behavior Intelligence",
 
         "frontend":
-            os.path.isfile(
-                os.path.join(
-                    FRONTEND_DIR,
-                    "index.html"
-                )
+            os.path.isdir(
+                FRONTEND_DIR
             ),
 
         "data_directory":
@@ -303,7 +338,7 @@ def server_error(error):
 
 
 # ============================================================
-# APPLICATION START
+# START SERVER
 # ============================================================
 
 if __name__ == "__main__":
