@@ -1,0 +1,528 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        CBI — Customer Intelligence
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/style.css"
+    >
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
+
+</head>
+
+
+<body>
+
+<div class="app-shell">
+
+
+    <!-- =====================================================
+         TOP NAVIGATION
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                CBI
+            </div>
+
+            <div class="brand-text">
+
+                <strong>
+                    Consumer Behavior
+                </strong>
+
+                <span>
+                    Intelligence
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="page-nav">
+
+            <a href="/dashboard.html">
+                Overview
+            </a>
+
+            <a
+                href="/intelligence.html"
+                class="active"
+            >
+                Customer Intelligence
+            </a>
+
+        </nav>
+
+
+        <div class="user-badge">
+
+            <span>
+                VIEWING AS
+            </span>
+
+            <strong id="userRole">
+                Business Executive
+            </strong>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <main class="dashboard-page">
+
+        <section class="page-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    03 / CUSTOMER INTELLIGENCE
+                </div>
+
+                <h1>
+                    Know your
+                    <span>customers.</span>
+                </h1>
+
+                <p>
+                    Discover customer segments,
+                    product preferences and purchasing
+                    behavior.
+                </p>
+
+            </div>
+
+
+            <div class="page-number">
+                03
+                <small>
+                    / 03
+                </small>
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CUSTOMER SEGMENTATION
+        ================================================== -->
+
+        <section class="analytics-section">
+
+            <div class="section-heading">
+
+                <span>
+                    CUSTOMER SEGMENTATION
+                </span>
+
+                <h2>
+                    Who are your customers?
+                </h2>
+
+            </div>
+
+
+            <div class="overview-grid">
+
+
+                <div class="analytics-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <span>
+                                RFM ANALYSIS
+                            </span>
+
+                            <h3>
+                                Customer distribution
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container medium">
+
+                        <canvas
+                            id="segmentChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="analytics-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <span>
+                                CUSTOMER VALUE
+                            </span>
+
+                            <h3>
+                                Segment overview
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="segments"
+                        class="segment-list"
+                    ></div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PRODUCT INTELLIGENCE
+        ================================================== -->
+
+        <section class="analytics-section">
+
+            <div class="section-heading">
+
+                <span>
+                    PRODUCT INTELLIGENCE
+                </span>
+
+                <h2>
+                    What do customers buy?
+                </h2>
+
+            </div>
+
+
+            <div class="analytics-card large-card">
+
+                <div class="card-heading">
+
+                    <div>
+
+                        <span>
+                            PRODUCT REVENUE
+                        </span>
+
+                        <h3>
+                            Top performing products
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <canvas
+                        id="productChart"
+                    ></canvas>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PURCHASE BEHAVIOR
+        ================================================== -->
+
+        <section class="analytics-section">
+
+            <div class="section-heading">
+
+                <span>
+                    PURCHASE BEHAVIOR
+                </span>
+
+                <h2>
+                    When do customers buy?
+                </h2>
+
+            </div>
+
+
+            <div class="overview-grid">
+
+
+                <div class="analytics-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <span>
+                                WEEKLY BEHAVIOR
+                            </span>
+
+                            <h3>
+                                Revenue by day
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container medium">
+
+                        <canvas
+                            id="dayChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="analytics-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <span>
+                                HOURLY BEHAVIOR
+                            </span>
+
+                            <h3>
+                                Revenue by hour
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container medium">
+
+                        <canvas
+                            id="hourChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             BASKET + AI INSIGHTS
+        ================================================== -->
+
+        <section class="analytics-section">
+
+            <div class="overview-grid">
+
+
+                <div class="analytics-card">
+
+                    <div class="card-heading">
+
+                        <div>
+
+                            <span>
+                                BASKET ANALYSIS
+                            </span>
+
+                            <h3>
+                                Frequently co-purchased
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="pairs"
+                        class="pairs"
+                    ></div>
+
+                </div>
+
+
+
+                <div class="insight-panel ai-panel">
+
+                    <div class="ai-label">
+                        <span class="status-dot"></span>
+                        BUSINESS INTELLIGENCE
+                    </div>
+
+                    <span>
+                        KEY BEHAVIORAL SIGNAL
+                    </span>
+
+                    <h3>
+                        Peak purchasing occurs
+                        around midday.
+                    </h3>
+
+                    <p>
+                        Revenue analysis identifies
+                        the strongest purchasing period
+                        around 12:00, while Thursday
+                        generates the highest revenue
+                        among weekdays.
+                    </p>
+
+
+                    <div class="recommendation">
+
+                        <span>
+                            RECOMMENDATION
+                        </span>
+
+                        <strong>
+                            Prioritize midday campaigns
+                            and Thursday promotions.
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FINAL CTA
+        ================================================== -->
+
+        <section class="final-section">
+
+            <div>
+
+                <span>
+                    CUSTOMER INTELLIGENCE COMPLETE
+                </span>
+
+                <h2>
+                    Turn insight into
+                    <span>action.</span>
+                </h2>
+
+                <p>
+                    Use these behavioral patterns to
+                    improve retention, targeting and
+                    business performance.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/"
+                class="back-button"
+                onclick="localStorage.removeItem('cbiUserRole')"
+            >
+                ← Start Again
+            </a>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="site-footer">
+
+        <span>
+            CONSUMER BEHAVIOR INTELLIGENCE
+        </span>
+
+        <span>
+            CUSTOMER ANALYTICS · RFM · BEHAVIOR
+        </span>
+
+    </footer>
+
+</div>
+
+
+<script>
+
+const role =
+    localStorage.getItem("cbiUserRole");
+
+if (role) {
+
+    document.getElementById(
+        "userRole"
+    ).textContent = role;
+
+}
+
+</script>
+
+
+<script
+    src="/script.js"
+></script>
+
+
+</body>
+
+</html>
+```
