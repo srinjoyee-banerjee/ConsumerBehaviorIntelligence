@@ -1,674 +1,288 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <title>Consumer Behavior Intelligence</title>
 
-    <title>
-        Consumer Behavior Intelligence
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="/style.css"
-    >
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/chart.js"
-    ></script>
-
+    <link rel="stylesheet" href="/style.css">
 </head>
-
 
 <body>
 
+<div class="landing-page">
 
-<div class="app">
-
-
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
-
-    <aside class="sidebar">
+    <!-- TOP BAR -->
+    <header class="landing-nav">
 
         <div class="brand">
+            <div class="brand-mark">CBI</div>
 
-            <div class="brand-icon">
-                CBI
+            <div class="brand-text">
+                <strong>Consumer Behavior</strong>
+                <span>Intelligence</span>
             </div>
-
-            <div>
-
-                <h1>
-                    Consumer Intelligence
-                </h1>
-
-                <span>
-                    Analytics Platform
-                </span>
-
-            </div>
-
         </div>
 
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            ANALYTICS PLATFORM
+        </div>
 
-        <nav>
-
-            <a href="#overview">
-                Overview
-            </a>
-
-            <a href="#market">
-                Market
-            </a>
-
-            <a href="#customers">
-                Customers
-            </a>
-
-            <a href="#products">
-                Products
-            </a>
-
-            <a href="#behavior">
-                Behavior
-            </a>
-
-        </nav>
+    </header>
 
 
-        <div class="sidebar-footer">
+    <!-- HERO -->
+    <main class="landing-main">
 
-            <span>
-                DATASET
-            </span>
+        <section class="hero">
 
-            <p>
-                Online Retail<br>
-                541,909 transactions<br>
-                2010–2011
+            <div class="hero-label">
+                DATA ANALYTICS / CUSTOMER INTELLIGENCE
+            </div>
+
+            <h1>
+                Understand<br>
+                <span>Customer Behavior.</span>
+            </h1>
+
+            <p class="hero-description">
+                Transform transactional data into meaningful
+                customer insights, business intelligence and
+                actionable decisions.
             </p>
 
-        </div>
-
-    </aside>
+        </section>
 
 
+        <!-- USER SELECTION -->
+        <section class="selection-section">
 
-    <!-- =====================================================
-         MAIN CONTENT
-    ====================================================== -->
+            <div class="selection-heading">
 
-    <main class="main">
+                <div>
+                    <span class="section-number">01</span>
 
-
-        <!-- =================================================
-             HEADER
-        ================================================== -->
-
-        <header class="header">
-
-            <div>
-
-                <div class="eyebrow">
-                    DATA ANALYTICS / CONSUMER BEHAVIOR
+                    <h2>
+                        Select your role
+                    </h2>
                 </div>
 
-                <h2>
-                    Consumer Behavior<br>
-                    Intelligence
-                </h2>
-
                 <p>
-                    Executive view of revenue,
-                    customers, products and
-                    purchasing behavior.
+                    Choose how you want to explore the
+                    consumer intelligence platform.
                 </p>
 
             </div>
 
 
-            <div class="status">
+            <div class="role-grid">
 
-                <span class="status-dot"></span>
+                <button
+                    class="role-card"
+                    data-role="Business Executive"
+                    onclick="selectRole(this)"
+                >
 
-                LIVE ANALYTICS
+                    <span class="role-number">01</span>
 
-            </div>
-
-        </header>
-
-
-
-        <!-- =================================================
-             OVERVIEW
-        ================================================== -->
-
-        <section
-            class="section"
-            id="overview"
-        >
-
-            <div class="section-title">
-
-                <span>
-                    01 / EXECUTIVE OVERVIEW
-                </span>
-
-                <h3>
-                    Business Performance
-                </h3>
-
-            </div>
-
-
-            <div class="kpi-grid">
-
-
-                <div class="kpi-card">
-
-                    <span>
-                        Total Revenue
-                    </span>
-
-                    <strong id="revenue">
-                        —
-                    </strong>
-
-                    <small>
-                        Overall sales revenue
-                    </small>
-
-                </div>
-
-
-                <div class="kpi-card">
-
-                    <span>
-                        Total Orders
-                    </span>
-
-                    <strong id="orders">
-                        —
-                    </strong>
-
-                    <small>
-                        Unique invoices
-                    </small>
-
-                </div>
-
-
-                <div class="kpi-card">
-
-                    <span>
-                        Total Customers
-                    </span>
-
-                    <strong id="customers">
-                        —
-                    </strong>
-
-                    <small>
-                        Identified customers
-                    </small>
-
-                </div>
-
-
-                <div class="kpi-card">
-
-                    <span>
-                        UK Revenue Share
-                    </span>
-
-                    <strong id="uk-share">
-                        —
-                    </strong>
-
-                    <small>
-                        Contribution from UK
-                    </small>
-
-                </div>
-
-
-            </div>
-
-
-            <div class="card chart-large">
-
-                <div class="card-header">
-
-                    <div>
-
-                        <span>
-                            REVENUE TREND
-                        </span>
-
-                        <h4>
-                            Monthly Revenue
-                        </h4>
-
+                    <div class="role-icon">
+                        ↗
                     </div>
 
-                </div>
-
-
-                <canvas
-                    id="monthlyChart"
-                ></canvas>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             MARKET
-        ================================================== -->
-
-        <section
-            class="section"
-            id="market"
-        >
-
-            <div class="section-title">
-
-                <span>
-                    02 / MARKET INTELLIGENCE
-                </span>
-
-                <h3>
-                    Geographic Performance
-                </h3>
-
-            </div>
-
-
-            <div class="two-column">
-
-
-                <div class="card chart-large">
-
-                    <div class="card-header">
-
-                        <div>
-
-                            <span>
-                                GEOGRAPHY
-                            </span>
-
-                            <h4>
-                                Top Countries by Revenue
-                            </h4>
-
-                        </div>
-
-                    </div>
-
-
-                    <canvas
-                        id="countryChart"
-                    ></canvas>
-
-                </div>
-
-
-
-                <div class="card insight-card">
-
-                    <span>
-                        MARKET CONCENTRATION
-                    </span>
-
-                    <h4>
-                        United Kingdom
-                    </h4>
+                    <h3>
+                        Business Executive
+                    </h3>
 
                     <p>
-                        The UK is the dominant market,
-                        accounting for the majority of
-                        overall revenue.
+                        Monitor revenue, markets,
+                        customers and overall business
+                        performance.
                     </p>
 
-                    <div
-                        class="insight-number"
-                        id="uk-share-insight"
-                    >
-                        81.97%
-                    </div>
-
-                    <span>
-                        OF TOTAL REVENUE
+                    <span class="role-arrow">
+                        →
                     </span>
 
-                </div>
+                </button>
 
 
-            </div>
+                <button
+                    class="role-card"
+                    data-role="Marketing Analyst"
+                    onclick="selectRole(this)"
+                >
 
-        </section>
+                    <span class="role-number">02</span>
 
-
-
-        <!-- =================================================
-             CUSTOMERS
-        ================================================== -->
-
-        <section
-            class="section"
-            id="customers"
-        >
-
-            <div class="section-title">
-
-                <span>
-                    03 / CUSTOMER INTELLIGENCE
-                </span>
-
-                <h3>
-                    Customer Segmentation
-                </h3>
-
-            </div>
-
-
-            <div class="two-column">
-
-
-                <div class="card chart-large">
-
-                    <div class="card-header">
-
-                        <div>
-
-                            <span>
-                                RFM SEGMENTATION
-                            </span>
-
-                            <h4>
-                                Customer Distribution
-                            </h4>
-
-                        </div>
-
+                    <div class="role-icon">
+                        ◇
                     </div>
 
-
-                    <canvas
-                        id="segmentChart"
-                    ></canvas>
-
-                </div>
-
-
-
-                <div class="card">
-
-                    <div class="card-header">
-
-                        <div>
-
-                            <span>
-                                CUSTOMER VALUE
-                            </span>
-
-                            <h4>
-                                Segment Overview
-                            </h4>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="segments"
-                        class="segment-list"
-                    ></div>
-
-                </div>
-
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             PRODUCTS
-        ================================================== -->
-
-        <section
-            class="section"
-            id="products"
-        >
-
-            <div class="section-title">
-
-                <span>
-                    04 / PRODUCT INTELLIGENCE
-                </span>
-
-                <h3>
-                    Product Performance
-                </h3>
-
-            </div>
-
-
-            <div class="card chart-large">
-
-                <div class="card-header">
-
-                    <div>
-
-                        <span>
-                            PRODUCT REVENUE
-                        </span>
-
-                        <h4>
-                            Top Products
-                        </h4>
-
-                    </div>
-
-                </div>
-
-
-                <canvas
-                    id="productChart"
-                ></canvas>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             BEHAVIOR
-        ================================================== -->
-
-        <section
-            class="section"
-            id="behavior"
-        >
-
-            <div class="section-title">
-
-                <span>
-                    05 / PURCHASE BEHAVIOR
-                </span>
-
-                <h3>
-                    When and What Customers Buy
-                </h3>
-
-            </div>
-
-
-            <div class="two-column">
-
-
-                <div class="card chart-large">
-
-                    <div class="card-header">
-
-                        <div>
-
-                            <span>
-                                WEEKLY BEHAVIOR
-                            </span>
-
-                            <h4>
-                                Revenue by Day
-                            </h4>
-
-                        </div>
-
-                    </div>
-
-
-                    <canvas
-                        id="dayChart"
-                    ></canvas>
-
-                </div>
-
-
-
-                <div class="card chart-large">
-
-                    <div class="card-header">
-
-                        <div>
-
-                            <span>
-                                HOURLY BEHAVIOR
-                            </span>
-
-                            <h4>
-                                Revenue by Hour
-                            </h4>
-
-                        </div>
-
-                    </div>
-
-
-                    <canvas
-                        id="hourChart"
-                    ></canvas>
-
-                </div>
-
-
-            </div>
-
-
-
-            <div
-                class="two-column"
-                style="margin-top: 18px;"
-            >
-
-
-                <div class="card">
-
-                    <div class="card-header">
-
-                        <div>
-
-                            <span>
-                                BASKET ANALYSIS
-                            </span>
-
-                            <h4>
-                                Frequently Co-Purchased
-                                Products
-                            </h4>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="pairs"
-                        class="pairs"
-                    ></div>
-
-                </div>
-
-
-
-                <div class="card insight-card">
-
-                    <span>
-                        BUSINESS INSIGHT
-                    </span>
-
-                    <h4>
-                        Peak purchasing occurs
-                        around midday.
-                    </h4>
+                    <h3>
+                        Marketing Analyst
+                    </h3>
 
                     <p>
-                        Revenue analysis identifies
-                        the strongest purchasing
-                        period around 12:00, while
-                        Thursday generates the highest
-                        revenue among weekdays.
+                        Explore customer segments,
+                        purchasing patterns and
+                        market opportunities.
                     </p>
 
+                    <span class="role-arrow">
+                        →
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="role-card"
+                    data-role="Data Analyst"
+                    onclick="selectRole(this)"
+                >
+
+                    <span class="role-number">03</span>
+
+                    <div class="role-icon">
+                        ◌
+                    </div>
+
+                    <h3>
+                        Data Analyst
+                    </h3>
+
+                    <p>
+                        Investigate trends, product
+                        performance and behavioral
+                        patterns.
+                    </p>
+
+                    <span class="role-arrow">
+                        →
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="role-card"
+                    data-role="Sales Manager"
+                    onclick="selectRole(this)"
+                >
+
+                    <span class="role-number">04</span>
+
+                    <div class="role-icon">
+                        +
+                    </div>
+
+                    <h3>
+                        Sales Manager
+                    </h3>
+
+                    <p>
+                        Identify valuable customers,
+                        sales opportunities and
+                        retention priorities.
+                    </p>
+
+                    <span class="role-arrow">
+                        →
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <div class="selection-footer">
+
+                <div class="selected-role">
+                    <span>SELECTED ROLE</span>
+
+                    <strong id="selectedRole">
+                        None selected
+                    </strong>
                 </div>
 
+                <button
+                    id="continueBtn"
+                    class="continue-btn"
+                    onclick="continueToDashboard()"
+                    disabled
+                >
+                    Continue
+                    <span>→</span>
+                </button>
 
             </div>
 
         </section>
-
-
-
-        <!-- =================================================
-             FOOTER
-        ================================================== -->
-
-        <footer>
-
-            <span>
-                CONSUMER BEHAVIOR INTELLIGENCE
-            </span>
-
-            <span>
-                DATA ANALYTICS PORTFOLIO PROJECT
-            </span>
-
-        </footer>
-
 
     </main>
+
+
+    <!-- FOOTER -->
+    <footer class="landing-footer">
+
+        <span>
+            CONSUMER BEHAVIOR INTELLIGENCE
+        </span>
+
+        <span>
+            ONLINE RETAIL ANALYTICS · 2010–2011
+        </span>
+
+    </footer>
 
 </div>
 
 
-<script
-    src="/script.js"
-></script>
+<script>
 
+let selectedUser = null;
+
+
+function selectRole(card) {
+
+    document
+        .querySelectorAll(".role-card")
+        .forEach(item => {
+            item.classList.remove("selected");
+        });
+
+    card.classList.add("selected");
+
+    selectedUser = card.dataset.role;
+
+    document.getElementById("selectedRole").textContent =
+        selectedUser;
+
+    document.getElementById("continueBtn").disabled = false;
+}
+
+
+function continueToDashboard() {
+
+    if (!selectedUser) {
+        return;
+    }
+
+    localStorage.setItem(
+        "cbiUserRole",
+        selectedUser
+    );
+
+    window.location.href =
+        "/dashboard.html";
+}
+
+</script>
 
 </body>
-
 </html>
+```
