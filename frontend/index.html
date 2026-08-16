@@ -1,288 +1,100 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Consumer Behavior Intelligence</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="/style.css">
+    <title>
+        Consumer Behavior Intelligence
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/style.css"
+    >
+
 </head>
 
-<body>
 
-<div class="landing-page">
-
-    <!-- TOP BAR -->
-    <header class="landing-nav">
-
-        <div class="brand">
-            <div class="brand-mark">CBI</div>
-
-            <div class="brand-text">
-                <strong>Consumer Behavior</strong>
-                <span>Intelligence</span>
-            </div>
-        </div>
-
-        <div class="nav-status">
-            <span class="status-dot"></span>
-            ANALYTICS PLATFORM
-        </div>
-
-    </header>
+<body class="landing-page">
 
 
-    <!-- HERO -->
-    <main class="landing-main">
+    <main class="landing">
 
-        <section class="hero">
+        <div class="landing-card">
 
-            <div class="hero-label">
-                DATA ANALYTICS / CUSTOMER INTELLIGENCE
+            <div class="brand-mark">
+                CBI
             </div>
 
-            <h1>
-                Understand<br>
-                <span>Customer Behavior.</span>
-            </h1>
-
-            <p class="hero-description">
-                Transform transactional data into meaningful
-                customer insights, business intelligence and
-                actionable decisions.
+            <p class="eyebrow">
+                CONSUMER ANALYTICS
             </p>
 
-        </section>
+            <h1>
+                Consumer Behavior
+                <span>Intelligence</span>
+            </h1>
 
+            <p class="landing-description">
 
-        <!-- USER SELECTION -->
-        <section class="selection-section">
+                A data-driven analytics dashboard
+                for understanding revenue,
+                customers, products and purchasing
+                behavior.
 
-            <div class="selection-heading">
+            </p>
+
+            <div class="landing-stats">
 
                 <div>
-                    <span class="section-number">01</span>
-
-                    <h2>
-                        Select your role
-                    </h2>
+                    <strong>8</strong>
+                    <span>Datasets</span>
                 </div>
 
-                <p>
-                    Choose how you want to explore the
-                    consumer intelligence platform.
-                </p>
-
-            </div>
-
-
-            <div class="role-grid">
-
-                <button
-                    class="role-card"
-                    data-role="Business Executive"
-                    onclick="selectRole(this)"
-                >
-
-                    <span class="role-number">01</span>
-
-                    <div class="role-icon">
-                        ↗
-                    </div>
-
-                    <h3>
-                        Business Executive
-                    </h3>
-
-                    <p>
-                        Monitor revenue, markets,
-                        customers and overall business
-                        performance.
-                    </p>
-
-                    <span class="role-arrow">
-                        →
-                    </span>
-
-                </button>
-
-
-                <button
-                    class="role-card"
-                    data-role="Marketing Analyst"
-                    onclick="selectRole(this)"
-                >
-
-                    <span class="role-number">02</span>
-
-                    <div class="role-icon">
-                        ◇
-                    </div>
-
-                    <h3>
-                        Marketing Analyst
-                    </h3>
-
-                    <p>
-                        Explore customer segments,
-                        purchasing patterns and
-                        market opportunities.
-                    </p>
-
-                    <span class="role-arrow">
-                        →
-                    </span>
-
-                </button>
-
-
-                <button
-                    class="role-card"
-                    data-role="Data Analyst"
-                    onclick="selectRole(this)"
-                >
-
-                    <span class="role-number">03</span>
-
-                    <div class="role-icon">
-                        ◌
-                    </div>
-
-                    <h3>
-                        Data Analyst
-                    </h3>
-
-                    <p>
-                        Investigate trends, product
-                        performance and behavioral
-                        patterns.
-                    </p>
-
-                    <span class="role-arrow">
-                        →
-                    </span>
-
-                </button>
-
-
-                <button
-                    class="role-card"
-                    data-role="Sales Manager"
-                    onclick="selectRole(this)"
-                >
-
-                    <span class="role-number">04</span>
-
-                    <div class="role-icon">
-                        +
-                    </div>
-
-                    <h3>
-                        Sales Manager
-                    </h3>
-
-                    <p>
-                        Identify valuable customers,
-                        sales opportunities and
-                        retention priorities.
-                    </p>
-
-                    <span class="role-arrow">
-                        →
-                    </span>
-
-                </button>
-
-            </div>
-
-
-            <div class="selection-footer">
-
-                <div class="selected-role">
-                    <span>SELECTED ROLE</span>
-
-                    <strong id="selectedRole">
-                        None selected
-                    </strong>
+                <div>
+                    <strong>7+</strong>
+                    <span>Insights</span>
                 </div>
 
-                <button
-                    id="continueBtn"
-                    class="continue-btn"
-                    onclick="continueToDashboard()"
-                    disabled
-                >
-                    Continue
-                    <span>→</span>
-                </button>
+                <div>
+                    <strong>360°</strong>
+                    <span>Analysis</span>
+                </div>
 
             </div>
 
-        </section>
+
+            <a
+                href="/dashboard.html"
+                class="primary-button"
+            >
+
+                Open Analytics Dashboard
+
+                <span>→</span>
+
+            </a>
+
+
+            <p class="landing-footer">
+
+                Revenue · Customers · Products ·
+                Segments · Purchase Patterns
+
+            </p>
+
+        </div>
 
     </main>
 
 
-    <!-- FOOTER -->
-    <footer class="landing-footer">
-
-        <span>
-            CONSUMER BEHAVIOR INTELLIGENCE
-        </span>
-
-        <span>
-            ONLINE RETAIL ANALYTICS · 2010–2011
-        </span>
-
-    </footer>
-
-</div>
-
-
-<script>
-
-let selectedUser = null;
-
-
-function selectRole(card) {
-
-    document
-        .querySelectorAll(".role-card")
-        .forEach(item => {
-            item.classList.remove("selected");
-        });
-
-    card.classList.add("selected");
-
-    selectedUser = card.dataset.role;
-
-    document.getElementById("selectedRole").textContent =
-        selectedUser;
-
-    document.getElementById("continueBtn").disabled = false;
-}
-
-
-function continueToDashboard() {
-
-    if (!selectedUser) {
-        return;
-    }
-
-    localStorage.setItem(
-        "cbiUserRole",
-        selectedUser
-    );
-
-    window.location.href =
-        "/dashboard.html";
-}
-
-</script>
-
 </body>
+
 </html>
-```
