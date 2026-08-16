@@ -1,0 +1,674 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Consumer Behavior Intelligence
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/style.css"
+    >
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                CBI
+            </div>
+
+            <div>
+
+                <h1>
+                    Consumer Intelligence
+                </h1>
+
+                <span>
+                    Analytics Platform
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav>
+
+            <a href="#overview">
+                Overview
+            </a>
+
+            <a href="#market">
+                Market
+            </a>
+
+            <a href="#customers">
+                Customers
+            </a>
+
+            <a href="#products">
+                Products
+            </a>
+
+            <a href="#behavior">
+                Behavior
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <span>
+                DATASET
+            </span>
+
+            <p>
+                Online Retail<br>
+                541,909 transactions<br>
+                2010–2011
+            </p>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="header">
+
+            <div>
+
+                <div class="eyebrow">
+                    DATA ANALYTICS / CONSUMER BEHAVIOR
+                </div>
+
+                <h2>
+                    Consumer Behavior<br>
+                    Intelligence
+                </h2>
+
+                <p>
+                    Executive view of revenue,
+                    customers, products and
+                    purchasing behavior.
+                </p>
+
+            </div>
+
+
+            <div class="status">
+
+                <span class="status-dot"></span>
+
+                LIVE ANALYTICS
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             OVERVIEW
+        ================================================== -->
+
+        <section
+            class="section"
+            id="overview"
+        >
+
+            <div class="section-title">
+
+                <span>
+                    01 / EXECUTIVE OVERVIEW
+                </span>
+
+                <h3>
+                    Business Performance
+                </h3>
+
+            </div>
+
+
+            <div class="kpi-grid">
+
+
+                <div class="kpi-card">
+
+                    <span>
+                        Total Revenue
+                    </span>
+
+                    <strong id="revenue">
+                        —
+                    </strong>
+
+                    <small>
+                        Overall sales revenue
+                    </small>
+
+                </div>
+
+
+                <div class="kpi-card">
+
+                    <span>
+                        Total Orders
+                    </span>
+
+                    <strong id="orders">
+                        —
+                    </strong>
+
+                    <small>
+                        Unique invoices
+                    </small>
+
+                </div>
+
+
+                <div class="kpi-card">
+
+                    <span>
+                        Total Customers
+                    </span>
+
+                    <strong id="customers">
+                        —
+                    </strong>
+
+                    <small>
+                        Identified customers
+                    </small>
+
+                </div>
+
+
+                <div class="kpi-card">
+
+                    <span>
+                        UK Revenue Share
+                    </span>
+
+                    <strong id="uk-share">
+                        —
+                    </strong>
+
+                    <small>
+                        Contribution from UK
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="card chart-large">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span>
+                            REVENUE TREND
+                        </span>
+
+                        <h4>
+                            Monthly Revenue
+                        </h4>
+
+                    </div>
+
+                </div>
+
+
+                <canvas
+                    id="monthlyChart"
+                ></canvas>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             MARKET
+        ================================================== -->
+
+        <section
+            class="section"
+            id="market"
+        >
+
+            <div class="section-title">
+
+                <span>
+                    02 / MARKET INTELLIGENCE
+                </span>
+
+                <h3>
+                    Geographic Performance
+                </h3>
+
+            </div>
+
+
+            <div class="two-column">
+
+
+                <div class="card chart-large">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <span>
+                                GEOGRAPHY
+                            </span>
+
+                            <h4>
+                                Top Countries by Revenue
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+
+                    <canvas
+                        id="countryChart"
+                    ></canvas>
+
+                </div>
+
+
+
+                <div class="card insight-card">
+
+                    <span>
+                        MARKET CONCENTRATION
+                    </span>
+
+                    <h4>
+                        United Kingdom
+                    </h4>
+
+                    <p>
+                        The UK is the dominant market,
+                        accounting for the majority of
+                        overall revenue.
+                    </p>
+
+                    <div
+                        class="insight-number"
+                        id="uk-share-insight"
+                    >
+                        81.97%
+                    </div>
+
+                    <span>
+                        OF TOTAL REVENUE
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CUSTOMERS
+        ================================================== -->
+
+        <section
+            class="section"
+            id="customers"
+        >
+
+            <div class="section-title">
+
+                <span>
+                    03 / CUSTOMER INTELLIGENCE
+                </span>
+
+                <h3>
+                    Customer Segmentation
+                </h3>
+
+            </div>
+
+
+            <div class="two-column">
+
+
+                <div class="card chart-large">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <span>
+                                RFM SEGMENTATION
+                            </span>
+
+                            <h4>
+                                Customer Distribution
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+
+                    <canvas
+                        id="segmentChart"
+                    ></canvas>
+
+                </div>
+
+
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <span>
+                                CUSTOMER VALUE
+                            </span>
+
+                            <h4>
+                                Segment Overview
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="segments"
+                        class="segment-list"
+                    ></div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PRODUCTS
+        ================================================== -->
+
+        <section
+            class="section"
+            id="products"
+        >
+
+            <div class="section-title">
+
+                <span>
+                    04 / PRODUCT INTELLIGENCE
+                </span>
+
+                <h3>
+                    Product Performance
+                </h3>
+
+            </div>
+
+
+            <div class="card chart-large">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span>
+                            PRODUCT REVENUE
+                        </span>
+
+                        <h4>
+                            Top Products
+                        </h4>
+
+                    </div>
+
+                </div>
+
+
+                <canvas
+                    id="productChart"
+                ></canvas>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             BEHAVIOR
+        ================================================== -->
+
+        <section
+            class="section"
+            id="behavior"
+        >
+
+            <div class="section-title">
+
+                <span>
+                    05 / PURCHASE BEHAVIOR
+                </span>
+
+                <h3>
+                    When and What Customers Buy
+                </h3>
+
+            </div>
+
+
+            <div class="two-column">
+
+
+                <div class="card chart-large">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <span>
+                                WEEKLY BEHAVIOR
+                            </span>
+
+                            <h4>
+                                Revenue by Day
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+
+                    <canvas
+                        id="dayChart"
+                    ></canvas>
+
+                </div>
+
+
+
+                <div class="card chart-large">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <span>
+                                HOURLY BEHAVIOR
+                            </span>
+
+                            <h4>
+                                Revenue by Hour
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+
+                    <canvas
+                        id="hourChart"
+                    ></canvas>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div
+                class="two-column"
+                style="margin-top: 18px;"
+            >
+
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <span>
+                                BASKET ANALYSIS
+                            </span>
+
+                            <h4>
+                                Frequently Co-Purchased
+                                Products
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="pairs"
+                        class="pairs"
+                    ></div>
+
+                </div>
+
+
+
+                <div class="card insight-card">
+
+                    <span>
+                        BUSINESS INSIGHT
+                    </span>
+
+                    <h4>
+                        Peak purchasing occurs
+                        around midday.
+                    </h4>
+
+                    <p>
+                        Revenue analysis identifies
+                        the strongest purchasing
+                        period around 12:00, while
+                        Thursday generates the highest
+                        revenue among weekdays.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer>
+
+            <span>
+                CONSUMER BEHAVIOR INTELLIGENCE
+            </span>
+
+            <span>
+                DATA ANALYTICS PORTFOLIO PROJECT
+            </span>
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+<script
+    src="/script.js"
+></script>
+
+
+</body>
+
+</html>
